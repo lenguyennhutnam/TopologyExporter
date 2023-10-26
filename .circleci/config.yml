@@ -1,0 +1,79 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2.1
+
+executors:
+  node:
+    docker:
+      - image: cimg/node:21.0.0
+    working_directory: ~/repo
+    resource_class: small
+
+  node-browsers:
+    docker:
+      - image: cimg/node:21.0.0-browsers
+    working_directory: ~/repo
+    resource_class: medium
+
+jobs:
+  build-and-test:
+    executor: node-browsers
+
+    steps:
+      - checkout
+
+      - run: npm ci
+      - run: npm run lint:ci
+      - run: npm run build
+
+      - run: npm test
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ".git"
+            - "bin"
+            - "dist"
+            - "node_modules"
+            - "package-lock.json"
+            - "package.json"
+
+  release:
+    executor: node
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Copy old files from previous releases
+          command: |
+            npm run build:old-deploy-files
+
+      - run:
+          name: Prepare Git
+          command: |
+            git config user.email "$GIT_EMAIL"
+            git config user.name "$GIT_NAME"
+
+      - run:
+          name: Publish
+          command: |
+            npx gh-pages --dist 'dist/me' --message 'chore: update GitHub Pages [ci skip]' --dotfiles --repo "https://$GH_USERNAME:$GH_TOKEN@github.com/Thomaash/me.git"
+
+workflows:
+  version: 2
+
+  build:
+    jobs:
+      - build-and-test
+
+      - release:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only:
+                - release
