@@ -84,6 +84,7 @@ export default {
       return `${this.appName} | ${title}${subtitleStr}`;
     },
     drawerItems() {
+      console.log(this.$router);
       return this.$router.options.routes
         .filter((route) => route.meta && route.meta.drawer)
         .map(({ name, meta }) => ({

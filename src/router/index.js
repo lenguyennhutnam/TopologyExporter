@@ -30,7 +30,7 @@ function createRoutes(mapper = (v) => v) {
       },
       components: {
         default: () =>
-          import(/* webpackPrefetch: true */ "@/components/HomePage.vue"),
+          import(/* webpackPrefetch: true */ "@/components/pages/HomePage.vue"),
       },
     },
     {
@@ -43,7 +43,9 @@ function createRoutes(mapper = (v) => v) {
       },
       components: {
         default: () =>
-          import(/* webpackPrefetch: true */ "@/components/CanvasPage.vue"),
+          import(
+            /* webpackPrefetch: true */ "@/components/pages/CanvasPage.vue"
+          ),
         toolbar: () =>
           import(
             /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
@@ -91,7 +93,7 @@ function createRoutes(mapper = (v) => v) {
       components: {
         default: () =>
           import(
-            /* webpackPrefetch: true */ "@/components/MininetSettingsPage.vue"
+            /* webpackPrefetch: true */ "@/components/pages/MininetSettingsPage.vue"
           ),
         toolbar: () =>
           import(
@@ -109,7 +111,9 @@ function createRoutes(mapper = (v) => v) {
       },
       components: {
         default: () =>
-          import(/* webpackPrefetch: true */ "@/components/ExportPage.vue"),
+          import(
+            /* webpackPrefetch: true */ "@/components/pages/ExportPage.vue"
+          ),
         toolbar: () =>
           import(
             /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
@@ -126,7 +130,26 @@ function createRoutes(mapper = (v) => v) {
       },
       components: {
         default: () =>
-          import(/* webpackPrefetch: true */ "@/components/AboutPage.vue"),
+          import(
+            /* webpackPrefetch: true */ "@/components/pages/AboutPage.vue"
+          ),
+      },
+    },
+    {
+      path: "/user",
+      name: "User",
+      meta: {
+        title: "User",
+        drawer: true,
+        icon: "mdi-account",
+      },
+      components: {
+        default: () =>
+          import(/* webpackPrefetch: true */ "@/components/pages/UserPage.vue"),
+        // toolbar: () =>
+        //   import(
+        //     /* webpackPrefetch: true */ "@/components/TestPage.vue"
+        //   ),
       },
     },
   ].map(mapper);

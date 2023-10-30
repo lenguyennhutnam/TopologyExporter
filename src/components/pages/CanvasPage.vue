@@ -101,10 +101,10 @@
 </template>
 
 <script>
-import Edit from "@/components/Edit.vue";
-import LoadingSpinner from "@/components/LoadingSpinner.vue";
-import VisContainer from "@/components/VisContainer.vue";
-import { items as theme } from "@/theme";
+import Edit from "../Edit.vue";
+import LoadingSpinner from "../LoadingSpinner.vue";
+import VisContainer from "../VisContainer.vue";
+import { items as theme } from "@/theme.js";
 
 export default {
   name: "CanvasPage",

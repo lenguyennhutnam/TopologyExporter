@@ -16,10 +16,10 @@
 </template>
 
 <script>
-import BuildInfo from "./BuildInfo.vue";
-import AppDescription from "./AppDescription.vue";
-import AppLicense from "./AppLicense.vue";
-import AppLogo from "./AppLogo.vue";
+import AppLogo from "../AppLogo.vue";
+import BuildInfo from "../BuildInfo.vue";
+import AppDescription from "../AppDescription.vue";
+import AppLicense from "../AppLicense.vue";
 
 export default {
   name: "AboutPage",

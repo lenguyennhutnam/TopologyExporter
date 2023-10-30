@@ -16,10 +16,10 @@
 </template>
 
 <script>
-import BindingsList from "./BindingsList.vue";
-import AppDescription from "./AppDescription.vue";
-import AppLogo from "./AppLogo.vue";
-import PlaceholderHowTo from "./PlaceholderHowTo.vue";
+import BindingsList from "../BindingsList.vue";
+import AppDescription from "../AppDescription.vue";
+import AppLogo from "../AppLogo.vue";
+import PlaceholderHowTo from "../PlaceholderHowTo.vue";
 
 export default {
   name: "HomePage",
