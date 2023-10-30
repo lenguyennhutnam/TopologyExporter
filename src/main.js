@@ -11,7 +11,7 @@ import router from "./router";
 import store from "./store";
 import { dark, vuetifyDark, vuetifyLight } from "./theme";
 
-import { initServiceWorker } from "./service-worker-init";
+// import { initServiceWorker } from "./service-worker-init";
 
 Vue.use(Vuetify);
 const vuetify = new Vuetify({
@@ -60,4 +60,4 @@ new Vue({
   render: (h) => h(App),
 });
 
-initServiceWorker();
+// initServiceWorker();

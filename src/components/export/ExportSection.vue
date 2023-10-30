@@ -31,13 +31,13 @@
       >
     </v-flex>
 
-    <v-flex xs12 pt-4>
+    <!-- <v-flex xs12 pt-4>
       <h3>Image</h3>
     </v-flex>
 
     <v-flex xs12>
       <ImageConfig :working="working" @render="downloadImage" />
-    </v-flex>
+    </v-flex> -->
 
     <div style="height: 0px; width: 0px; overflow: hidden">
       <VisCanvas
@@ -57,7 +57,7 @@ import VisCanvas from "@/components/vis/VisCanvas.vue";
 import exporter from "@/exporter";
 import { mapGetters } from "vuex";
 
-import ImageConfig from "./ImageConfig.vue";
+// import ImageConfig from "./ImageConfig.vue";
 
 function download(filename, mimeOrHref, data) {
   const href =
@@ -77,7 +77,7 @@ function download(filename, mimeOrHref, data) {
 
 export default {
   name: "ExportSection",
-  components: { ImageConfig, VisCanvas },
+  components: { /*ImageConfig,*/ VisCanvas },
   data: () => ({
     visCanvasOn: false,
     visCanvasResolve: () => {},
@@ -109,13 +109,13 @@ export default {
         const json = JSON.stringify(
           exporter.exportData(this.data),
           undefined,
-          4,
+          4
         );
         this.showAlert("success", "Successfully exported.");
         download(
           this.getFilename("json"),
           "application/json;charset=utf-8",
-          json,
+          json
         );
       } catch (error) {
         console.error(error);
@@ -141,105 +141,105 @@ export default {
         this.working = false;
       }
     },
-    async downloadImage({ size, tiles, dark }) {
-      this.dark = dark;
+    // async downloadImage({ size, tiles, dark }) {
+    //   this.dark = dark;
 
-      await this.$nextTick();
+    //   await this.$nextTick();
 
-      const sizeString = tiles
-        ? `${(
-            Math.ceil(size.width / tiles.width) *
-            Math.ceil(size.height / tiles.height)
-          ).toLocaleString()} tiles of ${tiles.width.toLocaleString()}\xa0×\xa0${tiles.height.toLocaleString()}\xa0px (${(
-            (tiles.width * tiles.height) /
-            1e6
-          ).toLocaleString()}\xa0Mpx) each`
-        : `${size.width.toLocaleString()}\xa0×\xa0${size.height.toLocaleString()}\xa0px (${(
-            (size.width * size.height) /
-            1e6
-          ).toLocaleString()}\xa0Mpx)`;
+    //   const sizeString = tiles
+    //     ? `${(
+    //         Math.ceil(size.width / tiles.width) *
+    //         Math.ceil(size.height / tiles.height)
+    //       ).toLocaleString()} tiles of ${tiles.width.toLocaleString()}\xa0×\xa0${tiles.height.toLocaleString()}\xa0px (${(
+    //         (tiles.width * tiles.height) /
+    //         1e6
+    //       ).toLocaleString()}\xa0Mpx) each`
+    //     : `${size.width.toLocaleString()}\xa0×\xa0${size.height.toLocaleString()}\xa0px (${(
+    //         (size.width * size.height) /
+    //         1e6
+    //       ).toLocaleString()}\xa0Mpx)`;
 
-      try {
-        this.working = true;
-        this.$emit("log", []);
+    //   try {
+    //     this.working = true;
+    //     this.$emit("log", []);
 
-        this.showAlert(
-          "info",
-          `Rendering image ${
-            tiles ? "as tiles" : "as single picture"
-          }, size: ${sizeString}.`,
-        );
+    //     this.showAlert(
+    //       "info",
+    //       `Rendering image ${
+    //         tiles ? "as tiles" : "as single picture"
+    //       }, size: ${sizeString}.`
+    //     );
 
-        await this.renderImage(
-          {
-            canvasHeight: size.height,
-            canvasWidth: size.width,
-            scale: size.scale,
-            tileHeight: tiles ? tiles.height : size.height,
-            tileWidth: tiles ? tiles.width : size.width,
-          },
-          async (blob, { col, cols, doneTiles, row, rows, totalTiles }) => {
-            const tileSuffixDigits = tiles
-              ? Math.ceil(Math.log10(Math.max(cols, rows)))
-              : 0;
+    //     await this.renderImage(
+    //       {
+    //         canvasHeight: size.height,
+    //         canvasWidth: size.width,
+    //         scale: size.scale,
+    //         tileHeight: tiles ? tiles.height : size.height,
+    //         tileWidth: tiles ? tiles.width : size.width,
+    //       },
+    //       async (blob, { col, cols, doneTiles, row, rows, totalTiles }) => {
+    //         const tileSuffixDigits = tiles
+    //           ? Math.ceil(Math.log10(Math.max(cols, rows)))
+    //           : 0;
 
-            const tileSuffix =
-              cols === 1 && rows === 1
-                ? null
-                : `${`${col}`.padStart(
-                    tileSuffixDigits,
-                    "0",
-                  )}x${`${row}`.padStart(tileSuffixDigits, "0")}`;
+    //         const tileSuffix =
+    //           cols === 1 && rows === 1
+    //             ? null
+    //             : `${`${col}`.padStart(
+    //                 tileSuffixDigits,
+    //                 "0"
+    //               )}x${`${row}`.padStart(tileSuffixDigits, "0")}`;
 
-            const url = URL.createObjectURL(blob);
-            try {
-              await new Promise((resolve) => setTimeout(resolve, 50));
-              download(
-                this.getFilename(
-                  [tileSuffix, "png"].filter((v) => v != null).join("."),
-                ),
-                url,
-              );
-              await new Promise((resolve) => setTimeout(resolve, 50));
-              this.$store.commit("setWorking", {
-                curr: doneTiles,
-                max: totalTiles,
-              });
-            } finally {
-              URL.revokeObjectURL(url);
-            }
-          },
-        );
+    //         const url = URL.createObjectURL(blob);
+    //         try {
+    //           await new Promise((resolve) => setTimeout(resolve, 50));
+    //           download(
+    //             this.getFilename(
+    //               [tileSuffix, "png"].filter((v) => v != null).join(".")
+    //             ),
+    //             url
+    //           );
+    //           await new Promise((resolve) => setTimeout(resolve, 50));
+    //           this.$store.commit("setWorking", {
+    //             curr: doneTiles,
+    //             max: totalTiles,
+    //           });
+    //         } finally {
+    //           URL.revokeObjectURL(url);
+    //         }
+    //       }
+    //     );
 
-        this.showAlert("success", `Image rendered, size: ${sizeString}.`);
-      } catch (error) {
-        console.error(error);
-        this.showAlert(
-          "error",
-          `Image rendering failed. Probably too large image for this browser, size: ${sizeString}. You can try smaller size or rendering it as tiles.`,
-        );
-      } finally {
-        this.working = false;
-      }
-    },
-    async renderImage(size, onBlob) {
-      try {
-        await new Promise((resolve) => {
-          this.visCanvasResolve = resolve;
-          this.visCanvasOn = true;
-        });
+    //     this.showAlert("success", `Image rendered, size: ${sizeString}.`);
+    //   } catch (error) {
+    //     console.error(error);
+    //     this.showAlert(
+    //       "error",
+    //       `Image rendering failed. Probably too large image for this browser, size: ${sizeString}. You can try smaller size or rendering it as tiles.`
+    //     );
+    //   } finally {
+    //     this.working = false;
+    //   }
+    // },
+    // async renderImage(size, onBlob) {
+    //   try {
+    //     await new Promise((resolve) => {
+    //       this.visCanvasResolve = resolve;
+    //       this.visCanvasOn = true;
+    //     });
 
-        // The timeout prevents glitches like missing node icons, especially in Firefox.
-        await new Promise((resolve) => window.setTimeout(resolve, 100));
+    //     // The timeout prevents glitches like missing node icons, especially in Firefox.
+    //     await new Promise((resolve) => window.setTimeout(resolve, 100));
 
-        return await this.$refs.visCanvas.toTileBlobs({
-          ...size,
-          onBlob,
-        });
-      } finally {
-        this.visCanvasOn = false;
-      }
-    },
+    //     return await this.$refs.visCanvas.toTileBlobs({
+    //       ...size,
+    //       onBlob,
+    //     });
+    //   } finally {
+    //     this.visCanvasOn = false;
+    //   }
+    // },
     downloadAddressingPlan() {
       try {
         this.working = true;
@@ -249,7 +249,7 @@ export default {
         ap.build();
         ap.savePDF(
           this.data.projectName || "Mininet Network",
-          this.getFilename("pdf"),
+          this.getFilename("pdf")
         );
 
         this.showAlert("success", "Addressing plan built.");

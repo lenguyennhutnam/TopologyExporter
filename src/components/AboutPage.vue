@@ -17,7 +17,7 @@
 
 <script>
 import BuildInfo from "./BuildInfo.vue";
-// import AppDescription from "./AppDescription.vue";
+import AppDescription from "./AppDescription.vue";
 import AppLicense from "./AppLicense.vue";
 import AppLogo from "./AppLogo.vue";
 

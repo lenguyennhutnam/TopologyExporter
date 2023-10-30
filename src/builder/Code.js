@@ -27,6 +27,7 @@ export default class {
       "import mininet.link",
       "import mininet.log",
       "import mininet.node",
+      "mininet.log.setLogLevel('info')",
     ];
     this.init = [
       () => `net = Mininet(${this.mininetArgs.join(", ")})`,
@@ -38,6 +39,7 @@ export default class {
 
     // Init empty arrays
     metadata.forEach(({ attr }) => {
+      console.log(this[attr]);
       if (!this[attr]) {
         this[attr] = [];
       }
@@ -64,7 +66,7 @@ export default class {
           ...(silent ? [] : [`mininet.log.info('\\n*** ${name}\\n')`, ""]),
           ...arr,
           "",
-          "# }}}",
+          "# }}}"
         );
       }
     });

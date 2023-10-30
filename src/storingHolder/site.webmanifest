@@ -5,6 +5,7 @@
   "lang": "en-US",
   "id": "https://www.vycital.eu/me/",
   "scope": "/me/",
+  "start_url": "https://www.vycital.eu/me/",
   "display": "standalone",
   "background_color": "#ffffff",
   "msTileColor": "#009688",

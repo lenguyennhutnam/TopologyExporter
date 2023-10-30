@@ -75,7 +75,7 @@ export default {
   name: "App",
   data: () => ({
     drawer: true,
-    appName: "Mininet Editor",
+    appName: "Topology Exporter",
   }),
   computed: {
     documentTitle() {

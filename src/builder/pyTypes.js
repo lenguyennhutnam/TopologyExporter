@@ -10,8 +10,8 @@ function pyString(jsString) {
 function pyRaw(jsString) {
   return `${jsString}`;
 }
-
 const pyTypes = new Map();
+// => {true => True, false => False}
 pyTypes.set(Boolean, pyBoolean);
 pyTypes.set(Number, pyNumber);
 pyTypes.set(String, pyString);
