@@ -108,6 +108,7 @@ const keybindings = {
     a: "selectAll",
     y: "redo",
     z: "undo",
+    s: "saveTopo"
   },
 };
 
@@ -161,6 +162,11 @@ export default {
     this.focusRoot();
   },
   methods: {
+    saveTopo(){
+      console.log("huhu");
+      this.$emit("saveTopo")
+    },
+
     moveMouseTag({ clientX: x, clientY: y }) {
       this.mouseTag.x = x;
       this.mouseTag.y = y;

@@ -120,21 +120,21 @@ function createRoutes(mapper = (v) => v) {
           ),
       },
     },
-    {
-      path: "/about",
-      name: "About",
-      meta: {
-        title: "About",
-        drawer: true,
-        icon: "mdi-information",
-      },
-      components: {
-        default: () =>
-          import(
-            /* webpackPrefetch: true */ "@/components/pages/AboutPage.vue"
-          ),
-      },
-    },
+    // {
+    //   path: "/about",
+    //   name: "About",
+    //   meta: {
+    //     title: "About",
+    //     drawer: true,
+    //     icon: "mdi-information",
+    //   },
+    //   components: {
+    //     default: () =>
+    //       import(
+    //         /* webpackPrefetch: true */ "@/components/pages/AboutPage.vue"
+    //       ),
+    //   },
+    // },
     {
       path: "/user",
       name: "User",

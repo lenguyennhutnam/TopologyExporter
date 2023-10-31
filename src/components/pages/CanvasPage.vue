@@ -2,17 +2,18 @@
   <div class="canvas-container">
     <LoadingSpinner v-if="loading !== false" />
     <template v-else>
-      <VisContainer ref="vis" @edit-item="editItem" />
+      <VisContainer ref="vis" @edit-item="editItem" @saveTopo="save" />
       <Edit ref="edit" />
       <v-speed-dial
-        v-if="!isView"
-        v-model="fab"
-        bottom
-        right
-        open-on-hover
-        style="position: fixed"
+      v-if="!isView"
+      v-model="fab"
+      bottom
+      right
+      open-on-hover
+      style="position: fixed"
       >
-        <template #activator>
+      <p>asdsad</p>
+      <template #activator>
           <v-btn v-model="fab" fab dark color="primary" data-cy="fab-activator">
             <v-icon v-if="fab">mdi-chevron-down</v-icon>
             <v-icon v-else>mdi-chevron-up</v-icon>
@@ -96,24 +97,30 @@
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-speed-dial>
+      <LoadSection @click="this.emit('save')"></LoadSection>
     </template>
   </div>
 </template>
 
 <script>
+var db = "http://localhost:3001/usertopo";
 import Edit from "../Edit.vue";
 import LoadingSpinner from "../LoadingSpinner.vue";
 import VisContainer from "../VisContainer.vue";
+import LoadSection from "../export/LoadSection.vue";
 import { items as theme } from "@/theme.js";
+import exporter from "@/exporter";
+import { mapGetters } from "vuex";
 
 export default {
   name: "CanvasPage",
-  components: { Edit, LoadingSpinner, VisContainer },
+  components: { Edit, LoadingSpinner, VisContainer, LoadSection },
   data: () => ({
     fab: false,
     theme,
   }),
   computed: {
+    ...mapGetters("topology", ["data"]),
     loading() {
       return this.$store.state.loading;
     },
@@ -122,6 +129,32 @@ export default {
     },
   },
   methods: {
+    showAlert(type, text) {
+      this.$store.commit("setAlert", { type, text });
+    },
+    save() {
+      console.log("kkkk");
+      const savedData = JSON.stringify(
+        exporter.exportData(this.data),
+        undefined,
+        4
+      );
+      fetch(db + "/" + this.data.id, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: savedData,
+      })
+        .then((res) => res.json())
+        .then((savedData) => {
+          if (savedData) {
+            this.showAlert("success", "Saved.");
+          } else {
+            this.showAlert("info", "Saved canceled.");
+          }
+        });
+    },
     editItem(item, callback) {
       this.$refs.edit.edit(item, callback);
     },

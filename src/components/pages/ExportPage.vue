@@ -15,6 +15,8 @@
           <ExportSection @log="(l) => (log = l)" />
         </v-flex>
 
+        <LoadSection></LoadSection>
+
         <v-slide-y-transition mode="out-in">
           <v-flex v-if="log.length" xs12 pb-5>
             <h3 class="headline">Log</h3>
@@ -30,12 +32,19 @@
 <script>
 import ExportSection from "../export/ExportSection.vue";
 import ImportSection from "../export/ImportSection.vue";
+import LoadSection from "../export/LoadSection.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import LogListing from "../export/LogListing.vue";
 
 export default {
   name: "ExportPage",
-  components: { ExportSection, ImportSection, LoadingSpinner, LogListing },
+  components: {
+    ExportSection,
+    ImportSection,
+    LoadingSpinner,
+    LogListing,
+    LoadSection,
+  },
   data: () => ({
     log: [],
   }),

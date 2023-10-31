@@ -153,7 +153,6 @@ export default {
       const input = this.$refs.fileInput;
       const file = input.files[0];
       input.value = "";
-
       // Some browsers emit input, some change and some both.
       // Return if the file was already collected by the other event handler.
       if (!file) {
@@ -169,6 +168,7 @@ export default {
           const stringToImport =
             this.importers[file.type] ||
             this.importers[file.name.replace(/^.*(?=\.)/, "")];
+          console.log(stringToImport);
           if (stringToImport) {
             const str = fr.result;
             const { data, log } = stringToImport(str);
@@ -204,7 +204,7 @@ export default {
           icon: this.$vuetify.icons.warning,
           title: "Warning",
           width: 600,
-        },
+        }
       );
       if (confirmed) {
         this.$store.commit("topology/importData", importData);

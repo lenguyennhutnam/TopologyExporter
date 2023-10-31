@@ -5,8 +5,8 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         <v-toolbar-title
           style="font-weight: 300; font-size: 24px; letter-spacing: unset"
-          >{{ appName }}</v-toolbar-title
-        >
+          >{{ appName }}
+        </v-toolbar-title>
 
         <v-spacer />
 
@@ -84,7 +84,6 @@ export default {
       return `${this.appName} | ${title}${subtitleStr}`;
     },
     drawerItems() {
-      console.log(this.$router);
       return this.$router.options.routes
         .filter((route) => route.meta && route.meta.drawer)
         .map(({ name, meta }) => ({

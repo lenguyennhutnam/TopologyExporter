@@ -1,15 +1,19 @@
 <template>
   <div>
-    <v-btn
-      v-for="({ icon, text, action, enabled }, i) in items"
-      :key="i"
-      :disabled="!enabled"
-      dark
-      icon
-      @click="action"
-    >
-      <v-icon :alt="text">{{ icon }}</v-icon>
-    </v-btn>
+      <v-row  align="center">
+        <v-row>This topo</v-row>
+        <v-divider :thickness="20" vertical>dasd</v-divider>
+        <v-btn
+          v-for="({ icon, text, action, enabled }, i) in items"
+          :key="i"
+          :disabled="!enabled"
+          dark
+          icon
+          @click="action"
+        >
+          <v-icon :alt="text">{{ icon }}</v-icon>
+        </v-btn>
+      </v-row>
   </div>
 </template>
 
@@ -69,7 +73,7 @@ export default {
       window.open(
         `${this.$router.mode === "hash" ? "#" : ""}${this.viewURL}`,
         "",
-        "_blank",
+        "_blank"
       );
     },
   },
