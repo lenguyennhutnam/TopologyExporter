@@ -12,7 +12,6 @@
       open-on-hover
       style="position: fixed"
       >
-      <p>asdsad</p>
       <template #activator>
           <v-btn v-model="fab" fab dark color="primary" data-cy="fab-activator">
             <v-icon v-if="fab">mdi-chevron-down</v-icon>
@@ -97,7 +96,7 @@
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-speed-dial>
-      <LoadSection @click="this.emit('save')"></LoadSection>
+      <!-- <LoadSection @click="this.emit('save')"></LoadSection> -->
     </template>
   </div>
 </template>
@@ -133,7 +132,6 @@ export default {
       this.$store.commit("setAlert", { type, text });
     },
     save() {
-      console.log("kkkk");
       const savedData = JSON.stringify(
         exporter.exportData(this.data),
         undefined,
@@ -150,6 +148,7 @@ export default {
         .then((savedData) => {
           if (savedData) {
             this.showAlert("success", "Saved.");
+            // this.$emit()
           } else {
             this.showAlert("info", "Saved canceled.");
           }

@@ -34,11 +34,7 @@
             >
           </template>
           <v-list>
-            <v-list-item
-              v-for="(topo, i) in topoList"
-              :key="'topo' + i"
-              @click.stop
-            >
+            <v-list-item v-for="topo in topoList" :key="topo.id" @click.stop>
               <v-list-item-title @click="loadTopo(topo.id)">{{
                 topo.projectName.slice(18)
               }}</v-list-item-title>
@@ -79,6 +75,20 @@ export default {
     },
   },
   methods: {
+    // checkChanged(topo) {
+    //   fetch(db + "/" + topo.id)
+    //     .then((res) => res.json())
+    //     .then((topo) => {
+    //       console.log(topo.id);
+    //       // if(topo)
+    //     });
+    //   return true;
+    //   // console.log(topo.id);
+    //   // if (topo.id == 1) {
+    //   //   return false;
+    //   // }
+    //   // return false;
+    // },
     showAlert(type, text) {
       this.$store.commit("setAlert", { type, text });
     },
@@ -89,6 +99,10 @@ export default {
           this.topoList = topo;
         });
     },
+
+    // checkChange() {
+
+    // }
 
     async confirmLoad(loadData) {
       const confirmed = await this.$confirm(
@@ -123,6 +137,10 @@ export default {
         undefined,
         4
       );
+      if (!this.data.id) {
+        this.saveAs();
+        return;
+      }
       fetch(db + "/" + this.data.id, {
         method: "PUT",
         headers: {
@@ -132,8 +150,10 @@ export default {
       })
         .then((res) => res.json())
         .then((savedData) => {
+          console.log(savedData);
           if (savedData) {
             this.showAlert("success", "Saved.");
+            // this.fetchAllTopo();
           } else {
             this.showAlert("info", "Saved canceled.");
           }

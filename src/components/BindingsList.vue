@@ -107,6 +107,7 @@ export default {
       { combination: "ctrl + a", description: "Select all." },
       { combination: "ctrl + y", description: "Redo undone change." },
       { combination: "ctrl + z", description: "Undo a change." },
+      { combination: "ctrl + s", description: "Save to database." },
 
       { combination: "del", description: "Delete selected items." },
       {

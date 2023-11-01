@@ -163,7 +163,6 @@ export default {
   },
   methods: {
     saveTopo(){
-      console.log("huhu");
       this.$emit("saveTopo")
     },
 
