@@ -1,19 +1,18 @@
 <template>
   <div>
-      <v-row  align="center">
-        <v-row>This topo</v-row>
-        <v-divider :thickness="20" vertical>dasd</v-divider>
-        <v-btn
-          v-for="({ icon, text, action, enabled }, i) in items"
-          :key="i"
-          :disabled="!enabled"
-          dark
-          icon
-          @click="action"
-        >
-          <v-icon :alt="text">{{ icon }}</v-icon>
-        </v-btn>
-      </v-row>
+    <div>
+      <span>{{ this.data.projectName }}</span>
+      <v-btn
+        v-for="({ icon, text, action, enabled }, i) in items"
+        :key="i"
+        :disabled="!enabled"
+        dark
+        icon
+        @click="action"
+      >
+        <v-icon :alt="text">{{ icon }}</v-icon>
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -29,7 +28,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("topology", ["canUndo", "canRedo"]),
+    ...mapGetters("topology", ["canUndo", "canRedo", "data"]),
     show() {
       return !!this.items.length;
     },

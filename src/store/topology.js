@@ -34,6 +34,16 @@ export const topology = {
     future: [],
   },
   getters: {
+    jsonData(state) {
+      return JSON.stringify(
+        exporter.exportData(state.data),
+        undefined,
+        4
+      );
+    },
+    past(state) {
+      return state.past;
+    },
     data(state) {
       return state.data;
     },
@@ -52,7 +62,7 @@ export const topology = {
         // Edges don't have x and y coordinates
         // There can be nodes without coordinates (script import)
         const firstWithCoords = items.find(
-          ({ x, y }) => x != null && y != null,
+          ({ x, y }) => x != null && y != null
         );
 
         // Nothing can be done if there are no nodes with coordinates
@@ -83,7 +93,7 @@ export const topology = {
             sY: firstWithCoords.y,
             eY: firstWithCoords.y,
             empty: false,
-          },
+          }
         );
       })();
 
@@ -123,6 +133,7 @@ export const topology = {
     },
   },
   mutations: {
+
     importData({ data: sd, past, future }, importData) {
       past.splice(0);
       future.splice(0);
@@ -202,7 +213,7 @@ export const topology = {
         ids.map((id) => ({
           before: JSON.stringify(state.data.items[id] || null),
           after: JSON.stringify(null),
-        })),
+        }))
       );
 
       commit("applyChange", {
@@ -218,7 +229,7 @@ export const topology = {
             before: JSON.stringify(before || null),
             after: JSON.stringify({ ...before, ...item }),
           };
-        }),
+        })
       );
 
       commit("applyChange", {
@@ -231,7 +242,7 @@ export const topology = {
         items.map((item) => ({
           before: JSON.stringify(state.data.items[item.id] || null),
           after: JSON.stringify(item),
-        })),
+        }))
       );
 
       commit("applyChange", {
@@ -254,8 +265,8 @@ export const topology = {
         commit(
           "applyChange",
           prepareUndoRedoChange(
-            unit.map(({ after, before }) => ({ after: before, before: after })),
-          ),
+            unit.map(({ after, before }) => ({ after: before, before: after }))
+          )
         );
       } else {
         throw new Error("Nothing to redo.");

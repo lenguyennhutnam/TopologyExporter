@@ -1,6 +1,7 @@
 import { ltm } from "./persist";
 import { syncPlugin } from "./sync";
 import { topology } from "./topology";
+import exporter from "@/exporter";
 
 export const ready = ltm.ready;
 export const config = {

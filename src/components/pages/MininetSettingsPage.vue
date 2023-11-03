@@ -128,9 +128,13 @@ export default {
     validators: { ipWithMask, port },
   }),
   computed: {
-    ...mapGetters("topology", ["data"]),
+    ...mapGetters("topology", ["data", "jsonData"]),
     loading() {
       return this.$store.state.loading;
+    },
+    testing() {
+      console.log(this.haha);
+      return this.haha;
     },
     autoSetMAC: new ComputedStoreProperty("autoSetMAC"),
     autoStaticARP: new ComputedStoreProperty("autoStaticARP"),

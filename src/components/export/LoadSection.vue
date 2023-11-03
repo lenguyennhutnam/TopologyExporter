@@ -61,7 +61,7 @@ export default {
     this.fetchAllTopo();
   },
   computed: {
-    ...mapGetters("topology", ["data"]),
+    ...mapGetters("topology", ["data", "jsonData"]),
     working: {
       get() {
         return !!this.$store.state.working;
@@ -132,11 +132,6 @@ export default {
     },
 
     save() {
-      const savedData = JSON.stringify(
-        exporter.exportData(this.data),
-        undefined,
-        4
-      );
       if (!this.data.id) {
         this.saveAs();
         return;
@@ -146,14 +141,13 @@ export default {
         headers: {
           "Content-Type": "application/json",
         },
-        body: savedData,
+        body: this.jsonData,
       })
         .then((res) => res.json())
         .then((savedData) => {
-          console.log(savedData);
           if (savedData) {
             this.showAlert("success", "Saved.");
-            // this.fetchAllTopo();
+            this.fetchAllTopo();
           } else {
             this.showAlert("info", "Saved canceled.");
           }

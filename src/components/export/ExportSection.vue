@@ -84,7 +84,7 @@ export default {
     dark: false,
   }),
   computed: {
-    ...mapGetters("topology", ["data"]),
+    ...mapGetters("topology", ["data", "jsonData"]),
     working: {
       get() {
         return !!this.$store.state.working;
@@ -105,17 +105,11 @@ export default {
       try {
         this.working = true;
         this.$emit("log", []);
-
-        const json = JSON.stringify(
-          exporter.exportData(this.data),
-          undefined,
-          4
-        );
         this.showAlert("success", "Successfully exported.");
         download(
           this.getFilename("json"),
           "application/json;charset=utf-8",
-          json
+          this.jsonData
         );
       } catch (error) {
         console.error(error);
