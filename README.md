@@ -1,6 +1,6 @@
 ![Mininet Editor Logo](./public/img/icons/android-chrome-384x384.png)
 
-# Mininet Editor
+# Topology Exporter
 SDN topology editor in your web browser with Mininet export.
 
 Exports JSONs (whole projects), Python scripts (Mininet emulation), addressing plans and topology images.\
@@ -8,7 +8,7 @@ Imports JSONs and Python scripts.\
 Persists projects even if the browser is closed and also works offline.
 
 ## Available online
-https://www.vycital.eu/me/
+
 
 ## Screenshots
 
