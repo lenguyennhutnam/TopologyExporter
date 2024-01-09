@@ -1,7 +1,9 @@
 <template>
   <div>
     <div>
-      <span>{{ this.data.projectName }}</span>
+      <span style="position: relative; top: 2px">{{
+        this.data.projectName
+      }}</span>
       <v-btn
         v-for="({ icon, text, action, enabled }, i) in items"
         :key="i"

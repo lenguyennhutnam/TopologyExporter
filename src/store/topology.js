@@ -1,9 +1,10 @@
 import Vue from "vue";
 import exporter from "@/exporter";
-
+import { v4 as randomId } from "uuid";
 import exampleData from "@/examples/medium_1_controller";
 
 const MAX_UNDO_LENGTH = 200;
+const db = "http://localhost:3001/usertopo";
 export { MAX_UNDO_LENGTH };
 
 function prepareUndoRedoChange(changeLogItem) {
@@ -35,11 +36,7 @@ export const topology = {
   },
   getters: {
     jsonData(state) {
-      return JSON.stringify(
-        exporter.exportData(state.data),
-        undefined,
-        4
-      );
+      return JSON.stringify(exporter.exportData(state.data), undefined, 4);
     },
     past(state) {
       return state.past;
@@ -133,6 +130,17 @@ export const topology = {
     },
   },
   mutations: {
+    async saveAs(_, newTopo) {
+      const randomNum = new Date().valueOf();
+      newTopo.id = "topo" + randomNum;
+      await fetch(db + "/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTopo),
+      });
+    },
 
     importData({ data: sd, past, future }, importData) {
       past.splice(0);

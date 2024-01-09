@@ -112,7 +112,6 @@ export default {
   },
   methods: {
     edit(item, callback) {
-      console.log(callback);
       this.item = JSON.parse(JSON.stringify(item));
       this.callback = callback;
 

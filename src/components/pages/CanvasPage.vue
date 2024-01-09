@@ -108,7 +108,6 @@ import LoadingSpinner from "../LoadingSpinner.vue";
 import VisContainer from "../VisContainer.vue";
 import LoadSection from "../export/LoadSection.vue";
 import { items as theme } from "@/theme.js";
-import exporter from "@/exporter";
 import { mapGetters } from "vuex";
 
 export default {
@@ -119,7 +118,7 @@ export default {
     theme,
   }),
   computed: {
-    ...mapGetters("topology", ["data"]),
+    ...mapGetters("topology", ["data", "jsonData"]),
     loading() {
       return this.$store.state.loading;
     },
@@ -132,17 +131,12 @@ export default {
       this.$store.commit("setAlert", { type, text });
     },
     save() {
-      const savedData = JSON.stringify(
-        exporter.exportData(this.data),
-        undefined,
-        4
-      );
       fetch(db + "/" + this.data.id, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: savedData,
+        body: jsonData,
       })
         .then((res) => res.json())
         .then((savedData) => {

@@ -10,8 +10,8 @@ import VuetifyConfirm from "vuetify-confirm";
 import router from "./router";
 import store from "./store";
 import { dark, vuetifyDark, vuetifyLight } from "./theme";
-
 // import { initServiceWorker } from "./service-worker-init";
+
 
 Vue.use(Vuetify);
 const vuetify = new Vuetify({
@@ -41,6 +41,8 @@ const vuetify = new Vuetify({
       "net-label": "mdi-label",
       "net-port": "mdi-ethernet",
       "net-switch": "mdi-switch",
+      "save-as": "mdi-content-save-plus",
+      refresh: "mdi-sync",
     },
   },
 });

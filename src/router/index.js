@@ -15,10 +15,28 @@ function selectionTitleSuffix(ids) {
 
 function createRoutes(mapper = (v) => v) {
   return [
+    // {
+    //   path: "/",
+    //   name: "/",
+    //   redirect: { name: "Home" },
+    // },
     {
       path: "/",
       name: "/",
-      redirect: { name: "Home" },
+      redirect: { name: "Login" },
+    },
+    {
+      path: "/login",
+      name: "Login",
+      meta: {
+        title: "Login",
+        // drawer: true,
+        icon: "mdi-login",
+      },
+      components: {
+        default: () =>
+          import(/* webpackPrefetch: true */ "@/components/pages/LoginForm.vue"),
+      },
     },
     {
       path: "/home",
