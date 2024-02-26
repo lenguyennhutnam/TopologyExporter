@@ -12,8 +12,8 @@ process.env.VUE_APP_BUILD_COMMIT_DATE = new Date(
 ).toISOString();
 
 module.exports = {
-  // publicPath: "./",
-  publicPath: process.env.NODE_ENV === "production" ? "/REPO_NAME/" : "/",
+  publicPath: "./",
+  // publicPath: process.env.NODE_ENV === "production" ? "/REPO_NAME/" : "/",
 
   // Do not fail the build with linting errors. It sometimes reports errors
   // that are simply not there.

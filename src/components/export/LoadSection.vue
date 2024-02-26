@@ -63,9 +63,10 @@
 </template>
 
 <script>
-var db = "http://localhost:3001/usertopo";
+// var db = "http://localhost:3001/usertopo";
 import { mapGetters } from "vuex";
 import SaveAs from "../SaveAs.vue";
+import { getTopo } from "../../firebase";
 
 export default {
   name: "SaveLoad",
@@ -97,13 +98,20 @@ export default {
       this.$store.commit("setAlert", { type, text });
     },
     async fetchAllTopo() {
-      this.working = true;
-      await fetch(db)
-        .then((res) => res.json())
-        .then((topo) => {
-          this.topoList = topo;
-        });
-      this.working = false;
+      getTopo("bEiivYnl5olZKCgY5qfr")
+      .then((res) => {
+        this.topoList = res.data;
+        this.topoList
+      });
+      // .then((topo) => console.log(topo));
+
+      // this.working = true;
+      // await fetch(db)
+      //   .then((res) => res.json())
+      //   .then((topo) => {
+      //     this.topoList = topo;
+      //   });
+      // this.working = false;
     },
 
     loadTopo(id) {
@@ -127,6 +135,7 @@ export default {
         }
       );
       if (confirmed) {
+        console.log(loadData);
         this.$store.commit("topology/importData", loadData);
         this.showAlert("success", "Loaded.");
       } else {
