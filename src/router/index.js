@@ -15,15 +15,11 @@ function selectionTitleSuffix(ids) {
 
 function createRoutes(mapper = (v) => v) {
   return [
-    // {
-    //   path: "/",
-    //   name: "/",
-    //   redirect: { name: "Home" },
-    // },
     {
       path: "/",
       name: "/",
-      redirect: { name: "Login" },
+      // redirect: { name: "Login" },
+      redirect: { name: "User" },
     },
     {
       path: "/login",
@@ -163,7 +159,7 @@ function createRoutes(mapper = (v) => v) {
       },
       components: {
         default: () =>
-          import(/* webpackPrefetch: true */ "@/components/pages/UserPage.vue"),
+          import(/* webpackPrefetch: true */ "@/components/pages/UserPage/AvatarInput.vue"),
         // toolbar: () =>
         //   import(
         //     /* webpackPrefetch: true */ "@/components/TestPage.vue"
