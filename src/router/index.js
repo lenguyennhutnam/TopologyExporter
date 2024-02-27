@@ -159,7 +159,7 @@ function createRoutes(mapper = (v) => v) {
       },
       components: {
         default: () =>
-          import(/* webpackPrefetch: true */ "@/components/pages/UserPage/AvatarInput.vue"),
+          import(/* webpackPrefetch: true */ "@/components/pages/UserPage/UserPage.vue"),
         // toolbar: () =>
         //   import(
         //     /* webpackPrefetch: true */ "@/components/TestPage.vue"

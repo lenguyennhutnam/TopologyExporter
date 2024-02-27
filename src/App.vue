@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import { getTopo } from "./firebase";
 
 export default {
   name: "App",

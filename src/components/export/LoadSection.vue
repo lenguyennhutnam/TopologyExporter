@@ -66,7 +66,7 @@
 // var db = "http://localhost:3001/usertopo";
 import { mapGetters } from "vuex";
 import SaveAs from "../SaveAs.vue";
-import { getTopo } from "../../firebase";
+import { getTopo, updateTopo } from "../../firebase";
 
 export default {
   name: "SaveLoad",
@@ -77,7 +77,7 @@ export default {
     };
   },
   created() {
-    this.fetchAllTopo();
+    // this.fetchAllTopo();
   },
   computed: {
     ...mapGetters("topology", ["data", "jsonData"]),
@@ -98,10 +98,13 @@ export default {
       this.$store.commit("setAlert", { type, text });
     },
     async fetchAllTopo() {
-      getTopo("bEiivYnl5olZKCgY5qfr")
-      .then((res) => {
-        this.topoList = res.data;
-        this.topoList
+      getTopo("bEiivYnl5olZKCgY5qfr").then((res) => {
+        this.topoList = JSON.parse(res.data);
+        this.topoList.projectName = res.projectName;
+        this.$store.commit("topology/importData", JSON.parse(res.data));
+        // console.log(this.$store.commit("topology/impo"));
+        // updateTopo("tXBy8I43cyNeX0ymeuve", this.$store.topology.state.data);
+        this.$store.commit("topology/importData", this.topoList);
       });
       // .then((topo) => console.log(topo));
 
@@ -171,8 +174,9 @@ export default {
     },
 
     saveAs(data) {
-      this.$store.commit("topology/saveAs", data);
-      this.$store.commit("topology/importData", data);
+      updateTopo("tXBy8I43cyNeX0ymeuve", "sss");
+      // this.$store.commit("topology/saveAs", data);
+      // this.$store.commit("topology/importData", data);
     },
   },
 };

@@ -4,10 +4,12 @@ import { getFirestore } from "firebase/firestore";
 import {
   doc,
   getDoc,
+  addDoc,
   collection,
   query,
   where,
   getDocs,
+  writeBatch,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -25,32 +27,38 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-export async function getTopos() {}
-
-export async function getTopo(id) {
-  const docRef = doc(db, "topologies", id);
+export async function getData(id, collection) {
+  if (!id) {
+    return null;
+  }
+  const docRef = doc(db, collection, id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    // console.log("Document data:", docSnap.data());
-    // data = docSnap.data();
     return docSnap.data();
   } else {
-    // docSnap.data() will be undefined in this case
-    // console.log("No such document!");
-    return "Not found";
+    return null;
   }
 }
 
-export async function getUserData(id) {
-  const docRef = doc(db, "users", id);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    // console.log("Document data:", docSnap.data());
-    // data = docSnap.data();
-    return docSnap.data();
-  } else {
-    // docSnap.data() will be undefined in this case
-    // console.log("No such document!");
-    return "Not found";
-  }
+export async function getList(id, type) {}
+
+export async function updateData(id, collection, field, data) {}
+
+export async function updateTopo(id, data) {
+  const typeList = {
+    user: () => {
+      console.log("user func" + data);
+    },
+    topo: () => {
+      console.log("topoFunc");
+    },
+  };
+  const def = "user";
+  typeList[def]();
+  // var currentTopo = getTopo(id);
+  // currentTopo.projectName = data;
+  // const batch = writeBatch(db);
+  // const nycRef = doc(db, "users", id);
+  // batch.update(nycRef, { username: currentTopo.projectName });
+  // await batch.commit();
 }

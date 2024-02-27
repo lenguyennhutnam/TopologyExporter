@@ -2,17 +2,30 @@ import { ltm } from "./persist";
 import { syncPlugin } from "./sync";
 import { topology } from "./topology";
 import exporter from "@/exporter";
+import router from "../router";
 
 export const ready = ltm.ready;
 export const config = {
   strict: process.env.NODE_ENV === "development",
   state: {
+    userid: "tXBy8I43cyNeX0ymeuve",
+    logined: false,
     loading: true,
     working: false,
     isUpdateAvailable: false,
     alert: { show: false },
   },
   mutations: {
+    login(id) {
+      this.logined = true;
+      this.userid = id;
+      router.push("/");
+    },
+    logout() {
+      this.logined = false;
+      this.userid = null;
+      router.push("/login");
+    },
     loaded(state) {
       state.loading = false;
     },

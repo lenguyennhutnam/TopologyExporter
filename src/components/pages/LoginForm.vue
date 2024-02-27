@@ -161,7 +161,6 @@ export default {
         this.$router.push("/home");
         return;
       }
-      console.log(222);
     },
     reset() {
       this.$refs.form.reset();
