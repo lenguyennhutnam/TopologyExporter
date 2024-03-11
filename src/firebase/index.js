@@ -52,8 +52,10 @@ export async function addData(email, password, username) {
       username: username,
       password: password,
     });
+    return true;
   } else {
     console.log("Existed");
+    return false;
   }
 }
 

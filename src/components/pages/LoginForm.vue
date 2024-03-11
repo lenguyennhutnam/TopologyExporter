@@ -90,10 +90,10 @@
                       </v-col>
                       <v-col cols="12">
                         <v-text-field
-                          v-model="registerPassword"
+                          v-model="password"
                           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                           :rules="[rules.required, rules.min]"
-                          :type="show1 ? 'text' : 'registerPassword'"
+                          :type="show1 ? 'text' : 'password'"
                           name="input-10-1"
                           label="Password"
                           hint="At least 8 characters"
@@ -144,8 +144,7 @@ export default {
   computed: {
     ...mapGetters("topology", ["data", "jsonData"]),
     passwordMatch() {
-      return () =>
-        this.registerPassword === this.verify || "Password must match";
+      return () => this.password === this.verify || "Password must match";
     },
   },
   working: {
@@ -182,12 +181,15 @@ export default {
         return;
       }
     },
-    register() {
-      console.log(this.registerForm);
-      // addData("nasaamsds@gmail.com", "123nammm", "sss");
-      // if (this.$refs.registerForm.validate()) {
-      //   return;
-      // }
+    async register() {
+      if (this.$refs.registerForm.validate()) {
+        if (addData(this.registerEmail, this.password, this.registerUsername)) {
+          return;
+        } else {
+          console.log("fail");
+          // this.existedEmail = true;
+        }
+      }
     },
     reset() {
       this.$refs.form.reset();
@@ -208,7 +210,7 @@ export default {
 
       registerUsername: "",
       registerEmail: "",
-      registerPassword: "",
+      password: "",
       verify: "",
       loginPassword: "",
       loginEmail: "",
@@ -219,6 +221,7 @@ export default {
       emailRules: [
         (v) => !!v || "Required",
         (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+        // (v) => !this.existedEmail || "Email is already in use",
       ],
 
       show1: false,
@@ -226,6 +229,8 @@ export default {
         required: (value) => !!value || "Required.",
         min: (v) => (v && v.length >= 8) || "Min 8 characters",
       },
+
+      // existedEmail: false,
     };
   },
 };
