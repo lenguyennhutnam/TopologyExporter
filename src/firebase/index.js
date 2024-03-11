@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, limit } from "firebase/firestore";
 import {
   doc,
   getDoc,
@@ -41,6 +41,42 @@ export async function getData(id, collection) {
 }
 
 export async function getList(id, type) {}
+
+export async function addData(email, password, username) {
+  const userRef = collection(db, "users");
+  const q = query(userRef, where("email", "==", email));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    await addDoc(collection(db, "users"), {
+      email: email,
+      username: username,
+      password: password,
+    });
+  } else {
+    console.log("Existed");
+  }
+}
+
+export async function checkLogin(email, password) {
+  const userRef = collection(db, "users");
+  // Create a query against the collection.
+  const q = query(
+    userRef,
+    where("email", "==", email),
+    where("password", "==", password),
+    limit(1)
+  );
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    // Cannot find user
+    return null;
+  } else {
+    const userInfo = querySnapshot.docs[0].data();
+    // userInfo["id"] = querySnapshot.docs[0].id;
+    delete userInfo["password"];
+    return userInfo;
+  }
+}
 
 export async function updateData(id, collection, field, data) {}
 

@@ -9,13 +9,16 @@ export const config = {
   strict: process.env.NODE_ENV === "development",
   state: {
     userid: "tXBy8I43cyNeX0ymeuve",
-    logined: false,
+    logined: true,
     loading: true,
     working: false,
     isUpdateAvailable: false,
     alert: { show: false },
   },
   mutations: {
+    testLogin(state){
+      state.logined = !state.logined;
+    },
     login(id) {
       this.logined = true;
       this.userid = id;

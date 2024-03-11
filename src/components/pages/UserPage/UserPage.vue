@@ -1,16 +1,15 @@
 <template>
-  <v-card class="mx-auto" max-width="434">
-    <v-img
+  <v-card class="mx-auto" max-width="350">
+    <!-- <v-img
       height="100%"
       src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
-    ></v-img>
-    <v-col>
-      <v-avatar size="100" style="position: absolute; top: 130px">
-        <v-img
-          src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"
-        ></v-img>
+    ></v-img> -->
+    <v-col style="display: flex; justify-content: center">
+      <v-avatar size="100" color="#eee">
+        <v-icon size="90">mdi-account</v-icon>
       </v-avatar>
     </v-col>
+    <v-divider></v-divider>
     <!-- <v-list-item color="rgba(0, 0, 0, .4)">
       <v-list-item-content>
         <v-list-item-title class="title">User name</v-list-item-title>
@@ -37,7 +36,8 @@
 </template>
 
 <script>
-import { getData } from "../../../firebase";
+import { getData, checkLogin } from "../../../firebase";
+import store from "../../../store";
 export default {
   data() {
     return {
@@ -48,26 +48,40 @@ export default {
       },
     };
   },
-  async created() {
-    const uid = "tXBy8I43cyNeX0ymeuve";
-    console.log(this.$store.state.userid);
-    await getData(this.$store.state.userid, "users").then((res) => {
+  working: {
+    get() {
+      return !!this.$store.state.working;
+    },
+    set(value) {
+      if (value === true) {
+        this.$store.commit("clearAlert");
+      }
+      this.$store.commit("setWorking", { working: !!value });
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    getData(store.state.userid, "users").then((res) => {
       if (res) {
-        console.log(res);
-        this.userInfor.username = res["username"];
-        this.userInfor.password = res["password"];
-        this.userInfor.email = res["email"];
+        next((vm) => {
+          vm.userInfor.username = res["username"];
+          vm.userInfor.password = res["password"];
+          vm.userInfor.email = res["email"];
+        });
+      } else {
+        next("/Login");
       }
     });
-    console.log(this.userInfor);
   },
   methods: {
+    setInfo() {},
     async logout() {
+      checkLogin("nam@gmail.com", "123nammm").then((result) => {
+        console.log(result);
+      });
       for (var info in this.userInfor) {
         this.userInfor[info] = "";
       }
-      this.$store.commit("logout");
-      // this.$router.push("/login");
+      // this.$store.commit("logout");
     },
   },
 };

@@ -56,7 +56,7 @@
                           block
                           :disabled="!valid"
                           color="primary"
-                          @click="validate"
+                          @click="login"
                         >
                           Login
                         </v-btn>
@@ -71,27 +71,18 @@
                 <v-card-text>
                   <v-form ref="registerForm" v-model="valid" lazy-validation>
                     <v-row>
-                      <v-col cols="12" >
+                      <v-col cols="12">
                         <v-text-field
-                          v-model="username"
+                          v-model="registerUsername"
                           :rules="[rules.required]"
                           label="Username"
                           maxlength="20"
                           required
                         ></v-text-field>
                       </v-col>
-                      <!-- <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="lastName"
-                          :rules="[rules.required]"
-                          label="Last Name"
-                          maxlength="20"
-                          required
-                        ></v-text-field>
-                      </v-col> -->
                       <v-col cols="12">
                         <v-text-field
-                          v-model="email"
+                          v-model="registerEmail"
                           :rules="emailRules"
                           label="E-mail"
                           required
@@ -99,10 +90,10 @@
                       </v-col>
                       <v-col cols="12">
                         <v-text-field
-                          v-model="password"
+                          v-model="registerPassword"
                           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                           :rules="[rules.required, rules.min]"
-                          :type="show1 ? 'text' : 'password'"
+                          :type="show1 ? 'text' : 'registerPassword'"
                           name="input-10-1"
                           label="Password"
                           hint="At least 8 characters"
@@ -130,7 +121,7 @@
                           block
                           :disabled="!valid"
                           color="primary"
-                          @click="validate"
+                          @click="register"
                           >Register</v-btn
                         >
                       </v-col>
@@ -148,19 +139,55 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { checkLogin, getData, addData } from "../../firebase";
 export default {
   computed: {
     ...mapGetters("topology", ["data", "jsonData"]),
     passwordMatch() {
-      return () => this.password === this.verify || "Password must match";
+      return () =>
+        this.registerPassword === this.verify || "Password must match";
+    },
+  },
+  working: {
+    get() {
+      return !!this.$store.state.working;
+    },
+    set(value) {
+      if (value === true) {
+        this.$store.commit("clearAlert");
+      }
+      this.$store.commit("setWorking", { working: !!value });
     },
   },
   methods: {
-    validate() {
+    async login() {
       if (this.$refs.loginForm.validate()) {
-        this.$router.push("/home");
+        this.working = true;
+        const confirmed = await this.$confirm(
+          "<p>This will <strong>erase all your work</strong> (except what you have save or exported).<br/>Are you sure you want to continue?</p>",
+          {
+            buttonFalseText: "Keep existing project",
+            buttonTrueText: "Load",
+            icon: this.$vuetify.icons.warning,
+            title: "Warning",
+            width: 600,
+          }
+        );
+        if (await checkLogin(this.loginEmail, this.loginPassword)) {
+          console.log("success");
+        } else {
+          console.log("cannot");
+        }
+        // getData()
         return;
       }
+    },
+    register() {
+      console.log(this.registerForm);
+      // addData("nasaamsds@gmail.com", "123nammm", "sss");
+      // if (this.$refs.registerForm.validate()) {
+      //   return;
+      // }
     },
     reset() {
       this.$refs.form.reset();
@@ -179,9 +206,9 @@ export default {
       ],
       valid: true,
 
-      username: "",
-      email: "",
-      password: "",
+      registerUsername: "",
+      registerEmail: "",
+      registerPassword: "",
       verify: "",
       loginPassword: "",
       loginEmail: "",

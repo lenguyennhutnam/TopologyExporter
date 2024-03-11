@@ -11,7 +11,7 @@
             color="primary"
             icon
             small
-            @click="fetchAllTopo"
+            @click="loginTo"
             :disabled="working"
             style="position: relative; top: 3px"
             ><v-icon>$vuetify.icons.refresh</v-icon></v-btn
@@ -64,9 +64,9 @@
 
 <script>
 // var db = "http://localhost:3001/usertopo";
-import { mapGetters } from "vuex";
 import SaveAs from "../SaveAs.vue";
-import { getTopo, updateTopo } from "../../firebase";
+import { mapGetters } from "vuex";
+import { getData, updateTopo } from "../../firebase";
 
 export default {
   name: "SaveLoad",
@@ -75,9 +75,6 @@ export default {
     return {
       topoList: "",
     };
-  },
-  created() {
-    // this.fetchAllTopo();
   },
   computed: {
     ...mapGetters("topology", ["data", "jsonData"]),
@@ -94,11 +91,16 @@ export default {
     },
   },
   methods: {
+    loginTo() {
+      console.log(this.$router);
+      this.$store.commit("testLogin");
+    },
+
     showAlert(type, text) {
       this.$store.commit("setAlert", { type, text });
     },
     async fetchAllTopo() {
-      getTopo("bEiivYnl5olZKCgY5qfr").then((res) => {
+      getData("bEiivYnl5olZKCgY5qfr", "topologies").then((res) => {
         this.topoList = JSON.parse(res.data);
         this.topoList.projectName = res.projectName;
         this.$store.commit("topology/importData", JSON.parse(res.data));
@@ -138,7 +140,6 @@ export default {
         }
       );
       if (confirmed) {
-        console.log(loadData);
         this.$store.commit("topology/importData", loadData);
         this.showAlert("success", "Loaded.");
       } else {

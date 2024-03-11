@@ -31,7 +31,13 @@ function createRoutes(mapper = (v) => v) {
       },
       components: {
         default: () =>
-          import(/* webpackPrefetch: true */ "@/components/pages/LoginForm.vue"),
+          import(
+            /* webpackPrefetch: true */ "@/components/pages/LoginForm.vue"
+          ),
+        toolbar: () =>
+          import(
+            /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
+          ),
       },
     },
     {
@@ -154,17 +160,24 @@ function createRoutes(mapper = (v) => v) {
       name: "User",
       meta: {
         title: "User",
-        drawer: true,
+        // drawer: true,
+        drawer: store.state.logined,
         icon: "mdi-account",
       },
       components: {
         default: () =>
-          import(/* webpackPrefetch: true */ "@/components/pages/UserPage/UserPage.vue"),
+          import(
+            /* webpackPrefetch: true */ "@/components/pages/UserPage/UserPage.vue"
+          ),
         // toolbar: () =>
         //   import(
         //     /* webpackPrefetch: true */ "@/components/TestPage.vue"
         //   ),
       },
+    },
+    {
+      path: "*",
+      redirect: { name: "Home" },
     },
   ].map(mapper);
 }
@@ -214,6 +227,12 @@ const routes = [
 export const router = new Router({ routes });
 
 router.beforeEach((to, from, next) => {
+  if (to.name == "User") {
+    if (store.state.logined == false) {
+      next("/Login");
+    }
+  }
+  // console.log(JSON.stringify(to) + "?????" + from);
   // Stay in view mode
   if (!to.meta.isView && from.meta.isView) {
     return next(`/view${to.fullPath}`);
