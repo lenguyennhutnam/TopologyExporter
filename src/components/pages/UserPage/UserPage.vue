@@ -60,7 +60,7 @@ export default {
     },
   },
   beforeRouteEnter(to, from, next) {
-    getData(store.state.userid, "users").then((res) => {
+    getData(store.state.userId, "users").then((res) => {
       if (res) {
         next((vm) => {
           vm.userInfor.username = res["username"];
@@ -75,12 +75,22 @@ export default {
   methods: {
     setInfo() {},
     async logout() {
-      checkLogin("nam@gmail.com", "123nammm").then((result) => {
-        console.log(result);
+      const confirmed = await this.$confirm("<p>Wanna logout?</p>", {
+        buttonFalseText: "No",
+        buttonTrueText: "Yes",
+        icon: this.$vuetify.icons.warning,
+        title: "Warning",
+        width: 300,
       });
-      for (var info in this.userInfor) {
-        this.userInfor[info] = "";
+      if (confirmed) {
+        this.$store.commit("logout");
       }
+      // checkLogin("nam@gmail.com", "123nammm").then((result) => {
+      //   console.log(result);
+      // });
+      // for (var info in this.userInfor) {
+      //   this.userInfor[info] = "";
+      // }
       // this.$store.commit("logout");
     },
   },

@@ -3,7 +3,9 @@
     <v-menu offset-y open-on-click>
       <template v-slot:activator="{ on }">
         <v-avatar v-on="on">
-          <v-btn icon=""><v-icon size="34">mdi-account</v-icon></v-btn>
+          <v-btn icon="" @click="checkUser"
+            ><v-icon size="34">mdi-account</v-icon></v-btn
+          >
         </v-avatar>
       </template>
       <v-list>
@@ -21,6 +23,9 @@
 </template>
 
 <script>
+import { checkLogin } from "../firebase";
+import store from "../store";
+
 export default {
   data() {
     return { items: [{ title: "Login" }] };
@@ -44,6 +49,7 @@ export default {
   watch: {
     logined(state) {
       // Neu da dang nhap
+      console.log(state);
       if (state) {
         this.items = [{ title: "abcd.xyz@example.com" }, { title: "Logout" }];
       } else {
@@ -53,6 +59,14 @@ export default {
   },
 
   methods: {
+    checkUser() {
+      console.log(23232323);
+      if (store.state.logined) {
+        this.items = [{ title: "abcd.xyz@example.com" }, { title: "Logout" }];
+      } else {
+        this.items = [{ title: "Login" }];
+      }
+    },
     selectSection(item) {
       switch (item.title) {
         case "Logout":

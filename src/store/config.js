@@ -8,25 +8,28 @@ export const ready = ltm.ready;
 export const config = {
   strict: process.env.NODE_ENV === "development",
   state: {
-    userid: "tXBy8I43cyNeX0ymeuve",
-    logined: true,
+    userId: "HuMypSBaSOEp763WeSsP",
+    email: null,
+    logined: false,
     loading: true,
     working: false,
     isUpdateAvailable: false,
     alert: { show: false },
   },
   mutations: {
-    testLogin(state){
+    testLogin(state) {
       state.logined = !state.logined;
     },
-    login(id) {
-      this.logined = true;
-      this.userid = id;
-      router.push("/");
+    login(state, user) {
+      state.logined = true;
+      state.userId = user.id;
+      state.email = state.userId.email;
+      router.push("/user");
     },
-    logout() {
-      this.logined = false;
-      this.userid = null;
+    logout(state) {
+      state.logined = false;
+      state.userId = null;
+
       router.push("/login");
     },
     loaded(state) {

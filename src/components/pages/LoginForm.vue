@@ -140,6 +140,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { checkLogin, getData, addData } from "../../firebase";
+import router from "../../router";
 export default {
   computed: {
     ...mapGetters("topology", ["data", "jsonData"]),
@@ -158,36 +159,58 @@ export default {
       this.$store.commit("setWorking", { working: !!value });
     },
   },
+
   methods: {
+    showAlert(type, text) {
+      this.$store.commit("setAlert", { type, text });
+      setTimeout(() => this.$store.commit("clearAlert"), 2000);
+    },
     async login() {
-      if (this.$refs.loginForm.validate()) {
+      if (await this.$refs.loginForm.validate()) {
         this.working = true;
-        const confirmed = await this.$confirm(
-          "<p>This will <strong>erase all your work</strong> (except what you have save or exported).<br/>Are you sure you want to continue?</p>",
-          {
-            buttonFalseText: "Keep existing project",
-            buttonTrueText: "Load",
-            icon: this.$vuetify.icons.warning,
-            title: "Warning",
-            width: 600,
-          }
-        );
-        if (await checkLogin(this.loginEmail, this.loginPassword)) {
-          console.log("success");
+        // return userinfo
+        const userinfo = await checkLogin(this.loginEmail, this.loginPassword);
+        if (userinfo) {
+          // console.log(userinfo);
+          this.showAlert("success", "Login successfully");
+          this.$store.commit("login", userinfo);
         } else {
-          console.log("cannot");
+          this.showAlert("error", "Email or password is incorrect");
         }
-        // getData()
         return;
       }
     },
     async register() {
-      if (this.$refs.registerForm.validate()) {
-        if (addData(this.registerEmail, this.password, this.registerUsername)) {
+      if (await this.$refs.registerForm.validate()) {
+        if (
+          await addData(
+            this.registerEmail,
+            this.password,
+            this.registerUsername
+          )
+        ) {
+          console.log("Done");
+          this.showAlert("success", "Registered");
+          this.tab = 0;
+          this.loginEmail = this.registerEmail;
+          this.loginPassword = this.password;
+          this.$refs.registerForm.reset();
           return;
         } else {
-          console.log("fail");
-          // this.existedEmail = true;
+          const acpt = await this.$confirm("<p>Email already in use</p>", {
+            buttonFalseText: "Try another email",
+            buttonTrueText: "Login",
+            icon: this.$vuetify.icons.warning,
+            title: "Warning",
+            width: 600,
+          });
+          if (acpt) {
+            this.tab = 0;
+            return;
+          } else {
+            this.registerEmail = "";
+            return;
+          }
         }
       }
     },
@@ -221,7 +244,6 @@ export default {
       emailRules: [
         (v) => !!v || "Required",
         (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
-        // (v) => !this.existedEmail || "Email is already in use",
       ],
 
       show1: false,
@@ -229,8 +251,6 @@ export default {
         required: (value) => !!value || "Required.",
         min: (v) => (v && v.length >= 8) || "Min 8 characters",
       },
-
-      // existedEmail: false,
     };
   },
 };

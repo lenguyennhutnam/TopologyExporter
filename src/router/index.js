@@ -140,28 +140,13 @@ function createRoutes(mapper = (v) => v) {
           ),
       },
     },
-    // {
-    //   path: "/about",
-    //   name: "About",
-    //   meta: {
-    //     title: "About",
-    //     drawer: true,
-    //     icon: "mdi-information",
-    //   },
-    //   components: {
-    //     default: () =>
-    //       import(
-    //         /* webpackPrefetch: true */ "@/components/pages/AboutPage.vue"
-    //       ),
-    //   },
-    // },
     {
       path: "/user",
       name: "User",
       meta: {
         title: "User",
         // drawer: true,
-        drawer: store.state.logined,
+        drawer: true,
         icon: "mdi-account",
       },
       components: {
@@ -169,10 +154,6 @@ function createRoutes(mapper = (v) => v) {
           import(
             /* webpackPrefetch: true */ "@/components/pages/UserPage/UserPage.vue"
           ),
-        // toolbar: () =>
-        //   import(
-        //     /* webpackPrefetch: true */ "@/components/TestPage.vue"
-        //   ),
       },
     },
     {
@@ -227,12 +208,12 @@ const routes = [
 export const router = new Router({ routes });
 
 router.beforeEach((to, from, next) => {
-  if (to.name == "User") {
+  if (to.name == "user") {
     if (store.state.logined == false) {
-      next("/Login");
+      next("/login");
     }
+    next("/user");
   }
-  // console.log(JSON.stringify(to) + "?????" + from);
   // Stay in view mode
   if (!to.meta.isView && from.meta.isView) {
     return next(`/view${to.fullPath}`);

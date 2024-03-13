@@ -76,6 +76,7 @@ export async function checkLogin(email, password) {
     const userInfo = querySnapshot.docs[0].data();
     // userInfo["id"] = querySnapshot.docs[0].id;
     delete userInfo["password"];
+    userInfo["id"] = querySnapshot.docs[0].id;
     return userInfo;
   }
 }
