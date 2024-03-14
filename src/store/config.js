@@ -23,13 +23,12 @@ export const config = {
     login(state, user) {
       state.logined = true;
       state.userId = user.id;
-      state.email = state.userId.email;
+      state.email = user.email;
       router.push("/user");
     },
     logout(state) {
       state.logined = false;
       state.userId = null;
-
       router.push("/login");
     },
     loaded(state) {

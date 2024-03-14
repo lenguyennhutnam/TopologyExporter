@@ -55,6 +55,17 @@
                           x-large
                           block
                           :disabled="!valid"
+                          color="disable"
+                          @click="tryIt"
+                        >
+                          Try
+                        </v-btn>
+                      </v-col>
+                      <v-col class="d-flex" cols="12" sm="3" xsm="12" align-end>
+                        <v-btn
+                          x-large
+                          block
+                          :disabled="!valid"
                           color="primary"
                           @click="login"
                         >
@@ -164,6 +175,10 @@ export default {
     showAlert(type, text) {
       this.$store.commit("setAlert", { type, text });
       setTimeout(() => this.$store.commit("clearAlert"), 2000);
+    },
+    tryIt() {
+      this.$store.state.logined = false;
+      router.push("/home");
     },
     async login() {
       if (await this.$refs.loginForm.validate()) {

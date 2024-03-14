@@ -29,40 +29,12 @@ import store from "../store";
 export default {
   data() {
     return { items: [{ title: "Login" }] };
-    // if (!this.$store.state.logined) {
-    //   return {
-    //     items: [{ title: "abcd.xyz@example.com" }, { title: "Logout" }],
-    //   };
-    // } else {
-    //   return {
-    //     items: [{ title: "Login" }],
-    //   };
-    // }
-  },
-
-  computed: {
-    logined() {
-      return this.$store.state.logined;
-    },
-  },
-
-  watch: {
-    logined(state) {
-      // Neu da dang nhap
-      console.log(state);
-      if (state) {
-        this.items = [{ title: "abcd.xyz@example.com" }, { title: "Logout" }];
-      } else {
-        this.items = [{ title: "Login" }];
-      }
-    },
   },
 
   methods: {
     checkUser() {
-      console.log(23232323);
-      if (store.state.logined) {
-        this.items = [{ title: "abcd.xyz@example.com" }, { title: "Logout" }];
+      if (this.$store.state.logined) {
+        this.items = [{ title: store.state.email }, { title: "Logout" }];
       } else {
         this.items = [{ title: "Login" }];
       }
@@ -70,15 +42,13 @@ export default {
     selectSection(item) {
       switch (item.title) {
         case "Logout":
-          console.log("Logout");
-          this.items.push({ title: "abcdasdsdasdple.com" });
+          this.$store.commit("logout");
           break;
         case "Login":
           this.$router.push("/login");
           break;
         default:
           this.$router.push("/user");
-          console.log("nothing");
       }
     },
   },

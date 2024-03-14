@@ -27,7 +27,7 @@
       </v-list-item-content></v-list-item
     >
     <v-divider></v-divider>
-    <v-card-actions>
+    <v-card-actions style="padding: 15px 10px;">
       <!-- <router-link to="/Login"> -->
       <v-btn color="primary" @click="logout">Logout</v-btn>
       <!-- </router-link> -->
@@ -42,9 +42,8 @@ export default {
   data() {
     return {
       userInfor: {
-        username: "",
-        password: "",
-        email: "",
+        Username: "",
+        Email: "",
       },
     };
   },
@@ -63,9 +62,8 @@ export default {
     getData(store.state.userId, "users").then((res) => {
       if (res) {
         next((vm) => {
-          vm.userInfor.username = res["username"];
-          vm.userInfor.password = res["password"];
-          vm.userInfor.email = res["email"];
+          vm.userInfor.Username = res["username"];
+          vm.userInfor.Email = res["email"];
         });
       } else {
         next("/Login");
