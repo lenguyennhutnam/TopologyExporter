@@ -1,6 +1,8 @@
 export default {
   importData(external) {
-    external = JSON.parse(JSON.stringify(external));
+    if (typeof external != "string") {
+      external = JSON.parse(JSON.stringify(external));
+    }
 
     if (external.version === 0) {
       const items = external.items.reduce((acc, val) => {

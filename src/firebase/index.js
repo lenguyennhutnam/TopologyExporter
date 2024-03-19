@@ -94,10 +94,6 @@ export async function updateTopo(id, data) {
   };
   const def = "user";
   typeList[def]();
-  // var currentTopo = getTopo(id);
-  // currentTopo.projectName = data;
-  // const batch = writeBatch(db);
-  // const nycRef = doc(db, "users", id);
-  // batch.update(nycRef, { username: currentTopo.projectName });
-  // await batch.commit();
 }
+
+export async function testAdd() {}

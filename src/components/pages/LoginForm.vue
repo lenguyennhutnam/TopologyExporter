@@ -158,40 +158,42 @@ export default {
     passwordMatch() {
       return () => this.password === this.verify || "Password must match";
     },
-  },
-  working: {
-    get() {
-      return !!this.$store.state.working;
+    working: {
+      get() {
+        return !!this.$store.state.working;
+      },
+      set(value) {
+        if (value) {
+          this.$store.commit("clearAlert");
+        }
+        this.$store.commit("setWorking", { working: !!value });
+      },
     },
-    set(value) {
-      if (value === true) {
-        this.$store.commit("clearAlert");
-      }
-      this.$store.commit("setWorking", { working: !!value });
-    },
   },
-
   methods: {
     showAlert(type, text) {
       this.$store.commit("setAlert", { type, text });
       setTimeout(() => this.$store.commit("clearAlert"), 2000);
     },
     tryIt() {
-      this.$store.state.logined = false;
+      this.$store.commit("setLoginState", true);
       router.push("/home");
     },
     async login() {
+      this.working = true;
+      this.valid = false;
       if (await this.$refs.loginForm.validate()) {
         this.working = true;
         // return userinfo
         const userinfo = await checkLogin(this.loginEmail, this.loginPassword);
         if (userinfo) {
-          // console.log(userinfo);
+          console.log(userinfo);
           this.showAlert("success", "Login successfully");
           this.$store.commit("login", userinfo);
         } else {
           this.showAlert("error", "Email or password is incorrect");
         }
+        this.working = false;
         return;
       }
     },

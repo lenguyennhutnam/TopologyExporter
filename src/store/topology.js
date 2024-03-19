@@ -143,6 +143,7 @@ export const topology = {
     },
 
     importData({ data: sd, past, future }, importData) {
+      console.log(importData);
       past.splice(0);
       future.splice(0);
 

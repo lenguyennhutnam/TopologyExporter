@@ -27,10 +27,11 @@
       </v-list-item-content></v-list-item
     >
     <v-divider></v-divider>
-    <v-card-actions style="padding: 15px 10px;">
-      <!-- <router-link to="/Login"> -->
-      <v-btn color="primary" @click="logout">Logout</v-btn>
-      <!-- </router-link> -->
+    <v-card-actions style="padding: 15px 10px">
+      <v-btn color="primary" @click="logout()">{{
+        this.$store.state.userId ? "Logout" : "Login"
+      }}</v-btn>
+      <v-btn @click="testing">Test</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -58,21 +59,33 @@ export default {
       this.$store.commit("setWorking", { working: !!value });
     },
   },
-  beforeRouteEnter(to, from, next) {
-    getData(store.state.userId, "users").then((res) => {
-      if (res) {
-        next((vm) => {
-          vm.userInfor.Username = res["username"];
-          vm.userInfor.Email = res["email"];
-        });
-      } else {
-        next("/Login");
-      }
-    });
+  mounted() {
+    this.userInfor.Username =
+      this.$store.state.username || "You are not logged in";
+    this.userInfor.Email = this.$store.state.email || "You are not logged in";
   },
+  // async beforeRouteEnter(to, from, next) {
+  //   await getData(store.state.userId, "users").then((res) => {
+  //     if (res) {
+  //       next((vm) => {
+  //         vm.userInfor.Username = res["username"];
+  //         vm.userInfor.Email = res["email"];
+  //       });
+  //     } else {
+  //       next("/Login");
+  //     }
+  //   });
+  // },
   methods: {
-    setInfo() {},
+    testing() {
+      console.log(123);
+    },
     async logout() {
+      // if not logged in => go to login
+      if (!this.$store.state.userId) {
+        this.$router.push("/login");
+        return;
+      }
       const confirmed = await this.$confirm("<p>Wanna logout?</p>", {
         buttonFalseText: "No",
         buttonTrueText: "Yes",

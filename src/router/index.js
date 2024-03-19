@@ -19,7 +19,7 @@ function createRoutes(mapper = (v) => v) {
       path: "/",
       name: "/",
       // redirect: { name: "Login" },
-      redirect: { name: "User" },
+      redirect: { name: "Home" },
     },
     {
       path: "/login",
@@ -172,7 +172,6 @@ function createNormalRoute(route) {
   if (route.children != null) {
     route.children = route.children.map(createNormalRoute);
   }
-
   return route;
 }
 
@@ -208,11 +207,10 @@ const routes = [
 export const router = new Router({ routes });
 
 router.beforeEach((to, from, next) => {
-  if (to.name == "user") {
+  if (to.name == "User") {
     if (store.state.logined == false) {
       next("/login");
-    }
-    next("/user");
+    } else next();
   }
   // Stay in view mode
   if (!to.meta.isView && from.meta.isView) {

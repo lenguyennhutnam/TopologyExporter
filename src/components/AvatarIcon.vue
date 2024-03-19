@@ -33,7 +33,7 @@ export default {
 
   methods: {
     checkUser() {
-      if (this.$store.state.logined) {
+      if (this.$store.state.userId) {
         this.items = [{ title: store.state.email }, { title: "Logout" }];
       } else {
         this.items = [{ title: "Login" }];

@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import { getData } from "./firebase";
 export default {
   name: "App",
   data: () => ({
@@ -128,8 +129,14 @@ export default {
       deep: true,
     },
   },
-  mounted() {
-    this.updateDocumentTitle();
+  async beforeCreate() {
+    // await getData(this.$store.state.userId, "users").then((res) => {
+    //   if (res) {
+    //     res.id = this.$store.state.userId;
+    //     this.$store.commit("init", res);
+    //   } else this.$router.push("/login");
+    // });
+    // this.updateDocumentTitle();
   },
   methods: {
     updateDocumentTitle() {

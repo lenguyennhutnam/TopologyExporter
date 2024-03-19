@@ -43,14 +43,24 @@
       <v-flex xs12 sm4>
         <v-menu :disabled="working" bottom offset-y>
           <template #activator="{ on }">
-            <v-btn :disabled="working" outlined block color="primary" v-on="on"
+            <v-btn
+              :disabled="working"
+              outlined
+              block
+              color="primary"
+              v-on="on"
+              @click="loadSavedTopo"
               >Load</v-btn
             >
           </template>
           <div class="loadTopoList">
             <v-list>
-              <v-list-item v-for="topo in topoList" :key="topo.id" @click.stop>
-                <v-list-item-title @click="loadTopo(topo.id)">{{
+              <v-list-item
+                v-for="topo in this.$store.state.topoList"
+                :key="topo.projectName"
+                @click.stop
+              >
+                <v-list-item-title @click="loadTopo(topo.data)">{{
                   topo.projectName
                 }}</v-list-item-title>
               </v-list-item>
@@ -72,9 +82,10 @@ export default {
   name: "SaveLoad",
   components: { SaveAs },
   data() {
-    return {
-      topoList: "",
-    };
+    return {};
+  },
+  mounted() {
+    // console.log(this.$store.state.topologies);
   },
   computed: {
     ...mapGetters("topology", ["data", "jsonData"]),
@@ -90,9 +101,42 @@ export default {
       },
     },
   },
+  // async beforeRouteEnter(to, from, next) {
+  //   next((vm) => {
+  //     vm.topoList = [];
+  //     vm.$store.state.topologies.forEach((id) => {
+  //       getData(id, "topologies").then((data) => {
+  //         vm.topoList.push(data);
+  //       });
+  //     });
+  //   });
+  // this.topoList = [];
+  // this.$store.state.topologies.forEach((id) => {
+  //   getData(id, "topologies").then((data) => {
+  //     this.topoList.push(data);
+  //   });
+  // });
+  // },
   methods: {
+    async loadSavedTopo() {
+      const topoList = [];
+      const idList = this.$store.state.topologies;
+      for (const i in idList) {
+        await getData(idList[i], "topologies").then((data) => {
+          topoList.push(data);
+        });
+      }
+      this.$store.commit("loadTopolist", topoList);
+    },
+    // async fetchTopolist() {
+    //   this.topoList = [];
+    //   await this.$store.state.topologies.forEach((id) => {
+    //     getData(id, "topologies").then((data) => {
+    //       this.topoList.push(data);
+    //     });
+    //   });
+    // },
     loginTo() {
-      console.log(this.$router);
       this.$store.commit("testLogin");
     },
 
@@ -100,16 +144,15 @@ export default {
       this.$store.commit("setAlert", { type, text });
     },
     async fetchAllTopo() {
-      getData("bEiivYnl5olZKCgY5qfr", "topologies").then((res) => {
-        this.topoList = JSON.parse(res.data);
-        this.topoList.projectName = res.projectName;
-        this.$store.commit("topology/importData", JSON.parse(res.data));
-        // console.log(this.$store.commit("topology/impo"));
-        // updateTopo("tXBy8I43cyNeX0ymeuve", this.$store.topology.state.data);
-        this.$store.commit("topology/importData", this.topoList);
-      });
+      // getData("bEiivYnl5olZKCgY5qfr", "topologies").then((res) => {
+      //   this.topoList = JSON.parse(res.data);
+      //   this.topoList.projectName = res.projectName;
+      //   this.$store.commit("topology/importData", JSON.parse(res.data));
+      //   // console.log(this.$store.commit("topology/impo"));
+      //   // updateTopo("tXBy8I43cyNeX0ymeuve", this.$store.topology.state.data);
+      //   this.$store.commit("topology/importData", this.topoList);
+      // });
       // .then((topo) => console.log(topo));
-
       // this.working = true;
       // await fetch(db)
       //   .then((res) => res.json())
@@ -119,12 +162,8 @@ export default {
       // this.working = false;
     },
 
-    loadTopo(id) {
-      fetch(db + "/" + id)
-        .then((res) => res.json())
-        .then((topo) => {
-          this.confirmLoad(topo);
-        });
+    loadTopo(topo) {
+      this.confirmLoad(JSON.parse(topo));
     },
 
     async confirmLoad(loadData) {
@@ -141,6 +180,7 @@ export default {
       );
       if (confirmed) {
         this.$store.commit("topology/importData", loadData);
+        this.$store
         this.showAlert("success", "Loaded.");
       } else {
         this.showAlert("info", "Load canceled.");
