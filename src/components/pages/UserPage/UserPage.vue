@@ -77,9 +77,6 @@ export default {
   //   });
   // },
   methods: {
-    testing() {
-      console.log(123);
-    },
     async logout() {
       // if not logged in => go to login
       if (!this.$store.state.userId) {

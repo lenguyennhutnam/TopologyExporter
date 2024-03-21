@@ -176,7 +176,7 @@ export default {
       setTimeout(() => this.$store.commit("clearAlert"), 2000);
     },
     tryIt() {
-      this.$store.commit("setLoginState", true);
+      this.$store.commit("loginWithoutAccount");
       router.push("/home");
     },
     async login() {
@@ -206,7 +206,6 @@ export default {
             this.registerUsername
           )
         ) {
-          console.log("Done");
           this.showAlert("success", "Registered");
           this.tab = 0;
           this.loginEmail = this.registerEmail;

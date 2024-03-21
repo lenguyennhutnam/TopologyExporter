@@ -11,6 +11,7 @@ export const config = {
   state: {
     topologies: ["bEiivYnl5olZKCgY5qfr", "e22qNHJwYxKMaGlThti5"],
     topoList: null,
+    topoId: null,
     userId: null,
     username: null,
     email: null,
@@ -28,8 +29,9 @@ export const config = {
       state.email = user.email;
       router.push("/home");
     },
-
-    getTopo() {},
+    setTopoId(state, id) {
+      state.topoId = id;
+    },
     loadTopolist(state, data) {
       state.topoList = data;
     },
@@ -50,13 +52,19 @@ export const config = {
       state.username = null;
       state.email = null;
       state.topologies = null;
+      state.topoList = null;
       router.push("/login");
     },
     loaded(state) {
       state.loading = false;
     },
-    setLoginState(state, value) {
-      return (state.logined = value);
+    loginWithoutAccount(state) {
+      state.logined = true;
+      state.userId = null;
+      state.username = null;
+      state.email = null;
+      state.topologies = null;
+      state.topoList = null;
     },
     setWorking(state, { working, curr, max }) {
       if (!isNaN(curr) && !isNaN(max)) {

@@ -1,10 +1,12 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore, limit } from "firebase/firestore";
 import {
+  getFirestore,
+  limit,
   doc,
   getDoc,
   addDoc,
+  updateDoc,
   collection,
   query,
   where,
@@ -54,7 +56,6 @@ export async function addData(email, password, username) {
     });
     return true;
   } else {
-    console.log("Existed");
     return false;
   }
 }
@@ -81,19 +82,38 @@ export async function checkLogin(email, password) {
   }
 }
 
+export async function updateTopo(topo) {
+  const topoRef = doc(db, "topologies", topo.id);
+  await updateDoc(topoRef, {
+    data: topo.data,
+    projectName: topo.projectName,
+  });
+}
+
+export async function addTopo(topo) {
+  const docRef = await addDoc(collection(db, "topologies"), {
+    data: topo.data,
+    projectName: topo.projectName,
+  });
+  const topoRef = doc(db, "topologies", docRef.id);
+  await updateDoc(topoRef, {
+    id: topoRef.id,
+  });
+}
+
 export async function updateData(id, collection, field, data) {}
 
-export async function updateTopo(id, data) {
-  const typeList = {
-    user: () => {
-      console.log("user func" + data);
-    },
-    topo: () => {
-      console.log("topoFunc");
-    },
-  };
-  const def = "user";
-  typeList[def]();
-}
+// export async function updateTopo(id, data) {
+//   const typeList = {
+//     user: () => {
+//       console.log("user func" + data);
+//     },
+//     topo: () => {
+//       console.log("topoFunc");
+//     },
+//   };
+//   const def = "user";
+//   typeList[def]();
+// }
 
 export async function testAdd() {}

@@ -23,7 +23,12 @@
       <v-flex xs12 sm4>
         <v-menu :disabled="working" bottom offset-y>
           <template #activator="{ on }">
-            <v-btn :disabled="working" outlined block color="primary" v-on="on"
+            <v-btn
+              :disabled="working || !logined"
+              outlined
+              block
+              color="primary"
+              v-on="on"
               >Save</v-btn
             >
           </template>
@@ -44,7 +49,7 @@
         <v-menu :disabled="working" bottom offset-y>
           <template #activator="{ on }">
             <v-btn
-              :disabled="working"
+              :disabled="working || !logined"
               outlined
               block
               color="primary"
@@ -60,7 +65,7 @@
                 :key="topo.projectName"
                 @click.stop
               >
-                <v-list-item-title @click="loadTopo(topo.data)">{{
+                <v-list-item-title @click="loadTopo(topo)">{{
                   topo.projectName
                 }}</v-list-item-title>
               </v-list-item>
@@ -89,6 +94,11 @@ export default {
   },
   computed: {
     ...mapGetters("topology", ["data", "jsonData"]),
+    logined: {
+      get() {
+        return this.$store.state.logined;
+      },
+    },
     working: {
       get() {
         return !!this.$store.state.working;
@@ -101,22 +111,6 @@ export default {
       },
     },
   },
-  // async beforeRouteEnter(to, from, next) {
-  //   next((vm) => {
-  //     vm.topoList = [];
-  //     vm.$store.state.topologies.forEach((id) => {
-  //       getData(id, "topologies").then((data) => {
-  //         vm.topoList.push(data);
-  //       });
-  //     });
-  //   });
-  // this.topoList = [];
-  // this.$store.state.topologies.forEach((id) => {
-  //   getData(id, "topologies").then((data) => {
-  //     this.topoList.push(data);
-  //   });
-  // });
-  // },
   methods: {
     async loadSavedTopo() {
       const topoList = [];
@@ -143,30 +137,14 @@ export default {
     showAlert(type, text) {
       this.$store.commit("setAlert", { type, text });
     },
-    async fetchAllTopo() {
-      // getData("bEiivYnl5olZKCgY5qfr", "topologies").then((res) => {
-      //   this.topoList = JSON.parse(res.data);
-      //   this.topoList.projectName = res.projectName;
-      //   this.$store.commit("topology/importData", JSON.parse(res.data));
-      //   // console.log(this.$store.commit("topology/impo"));
-      //   // updateTopo("tXBy8I43cyNeX0ymeuve", this.$store.topology.state.data);
-      //   this.$store.commit("topology/importData", this.topoList);
-      // });
-      // .then((topo) => console.log(topo));
-      // this.working = true;
-      // await fetch(db)
-      //   .then((res) => res.json())
-      //   .then((topo) => {
-      //     this.topoList = topo;
-      //   });
-      // this.working = false;
-    },
 
     loadTopo(topo) {
-      this.confirmLoad(JSON.parse(topo));
+      const data = JSON.parse(topo.data);
+      data["projectName"] = topo.projectName;
+      this.confirmLoad(data, topo.id);
     },
 
-    async confirmLoad(loadData) {
+    async confirmLoad(loadData, id) {
       this.working = true;
       const confirmed = await this.$confirm(
         "<p>This will <strong>erase all your work</strong> (except what you have save or exported).<br/>Are you sure you want to continue?</p>",
@@ -180,7 +158,7 @@ export default {
       );
       if (confirmed) {
         this.$store.commit("topology/importData", loadData);
-        this.$store
+        this.$store.commit("setTopoId", id);
         this.showAlert("success", "Loaded.");
       } else {
         this.showAlert("info", "Load canceled.");
@@ -189,31 +167,32 @@ export default {
     },
 
     save() {
-      if (!this.data.id) {
-        this.saveAsDialog();
-        return;
-      }
-      fetch(db + "/" + this.data.id, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: this.jsonData,
-      })
-        .then((res) => res.json())
-        .then((savedData) => {
-          if (savedData) {
-            this.showAlert("success", "Saved.");
-          } else {
-            this.showAlert("info", "Saved canceled.");
-          }
-        });
+      updateTopo("aSJuQo8493DnKi066z2C");
+      // if (!this.$store.state.topoId) {
+      //   console.log(this.$store.state.topoId);
+      //   this.saveAsDialog();
+      //   return;
+      // }
+      // console.log(2323);
+      // fetch(db + "/" + this.data.id, {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: this.jsonData,
+      // })
+      //   .then((res) => res.json())
+      //   .then((savedData) => {
+      //     if (savedData) {
+      //       this.showAlert("success", "Saved.");
+      //     } else {
+      //       this.showAlert("info", "Saved canceled.");
+      //     }
+      //   });
     },
-
     saveAsDialog() {
       this.$refs.saveAs.saveAsDialog();
     },
-
     saveAs(data) {
       updateTopo("tXBy8I43cyNeX0ymeuve", "sss");
       // this.$store.commit("topology/saveAs", data);
