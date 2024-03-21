@@ -46,6 +46,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { addTopo } from "../firebase";
 
 export default {
   name: "SaveAs",
@@ -73,15 +74,17 @@ export default {
   },
   methods: {
     saveAsDialog() {
-      this.lastPjName = this.data.projectName;
+      this.lastPjName = this.$store.state.topology.data.projectName;
       this.dialog = true;
       this.fullscreen = false;
     },
     save() {
-      // this.$store.commit("topology/saveAs", this.jsonData);
-      let payload = JSON.parse(this.jsonData);
-      payload.projectName = this.setName;
-      this.$emit("saveAs", payload);
+      const dataObj = JSON.parse(this.jsonData);
+      addTopo({
+        data: JSON.stringify(dataObj),
+        projectName: this.setName,
+        userId: this.$store.state.userId,
+      });
       this.dialog = false;
     },
 

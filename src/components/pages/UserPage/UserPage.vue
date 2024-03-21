@@ -1,9 +1,5 @@
 <template>
   <v-card class="mx-auto" max-width="350">
-    <!-- <v-img
-      height="100%"
-      src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
-    ></v-img> -->
     <v-col style="display: flex; justify-content: center">
       <v-avatar size="100" color="#eee">
         <v-icon size="90">mdi-account</v-icon>
@@ -31,7 +27,6 @@
       <v-btn color="primary" @click="logout()">{{
         this.$store.state.userId ? "Logout" : "Login"
       }}</v-btn>
-      <v-btn @click="testing">Test</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -64,18 +59,6 @@ export default {
       this.$store.state.username || "You are not logged in";
     this.userInfor.Email = this.$store.state.email || "You are not logged in";
   },
-  // async beforeRouteEnter(to, from, next) {
-  //   await getData(store.state.userId, "users").then((res) => {
-  //     if (res) {
-  //       next((vm) => {
-  //         vm.userInfor.Username = res["username"];
-  //         vm.userInfor.Email = res["email"];
-  //       });
-  //     } else {
-  //       next("/Login");
-  //     }
-  //   });
-  // },
   methods: {
     async logout() {
       // if not logged in => go to login
@@ -93,13 +76,6 @@ export default {
       if (confirmed) {
         this.$store.commit("logout");
       }
-      // checkLogin("nam@gmail.com", "123nammm").then((result) => {
-      //   console.log(result);
-      // });
-      // for (var info in this.userInfor) {
-      //   this.userInfor[info] = "";
-      // }
-      // this.$store.commit("logout");
     },
   },
 };

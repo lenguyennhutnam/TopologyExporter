@@ -1,4 +1,5 @@
 // Import the functions you need from the SDKs you need
+import { data } from "autoprefixer";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -12,6 +13,7 @@ import {
   where,
   getDocs,
   writeBatch,
+  arrayUnion,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -96,8 +98,13 @@ export async function addTopo(topo) {
     projectName: topo.projectName,
   });
   const topoRef = doc(db, "topologies", docRef.id);
+  const userRef = doc(db, "users", topo.userId);
   await updateDoc(topoRef, {
     id: topoRef.id,
+  });
+  console.log(userRef.id);
+  await updateDoc(userRef, {
+    topologies: arrayUnion(userRef.id),
   });
 }
 

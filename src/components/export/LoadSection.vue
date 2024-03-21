@@ -78,7 +78,6 @@
 </template>
 
 <script>
-// var db = "http://localhost:3001/usertopo";
 import SaveAs from "../SaveAs.vue";
 import { mapGetters } from "vuex";
 import { getData, updateTopo } from "../../firebase";
@@ -88,9 +87,6 @@ export default {
   components: { SaveAs },
   data() {
     return {};
-  },
-  mounted() {
-    // console.log(this.$store.state.topologies);
   },
   computed: {
     ...mapGetters("topology", ["data", "jsonData"]),
@@ -122,14 +118,6 @@ export default {
       }
       this.$store.commit("loadTopolist", topoList);
     },
-    // async fetchTopolist() {
-    //   this.topoList = [];
-    //   await this.$store.state.topologies.forEach((id) => {
-    //     getData(id, "topologies").then((data) => {
-    //       this.topoList.push(data);
-    //     });
-    //   });
-    // },
     loginTo() {
       this.$store.commit("testLogin");
     },
@@ -167,34 +155,25 @@ export default {
     },
 
     save() {
-      updateTopo("aSJuQo8493DnKi066z2C");
-      // if (!this.$store.state.topoId) {
-      //   console.log(this.$store.state.topoId);
-      //   this.saveAsDialog();
-      //   return;
-      // }
-      // console.log(2323);
-      // fetch(db + "/" + this.data.id, {
-      //   method: "PUT",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: this.jsonData,
-      // })
-      //   .then((res) => res.json())
-      //   .then((savedData) => {
-      //     if (savedData) {
-      //       this.showAlert("success", "Saved.");
-      //     } else {
-      //       this.showAlert("info", "Saved canceled.");
-      //     }
-      //   });
+      const currId = this.$store.state.topoId;
+      if (!currId) {
+        this.saveAsDialog();
+        return;
+      } else {
+        const dataObj = JSON.parse(this.jsonData);
+        const projectName = dataObj.projectName;
+        delete dataObj.projectName;
+        updateTopo({
+          data: JSON.stringify(dataObj),
+          id: currId,
+          projectName: projectName,
+        });
+      }
     },
     saveAsDialog() {
       this.$refs.saveAs.saveAsDialog();
     },
     saveAs(data) {
-      updateTopo("tXBy8I43cyNeX0ymeuve", "sss");
       // this.$store.commit("topology/saveAs", data);
       // this.$store.commit("topology/importData", data);
     },
