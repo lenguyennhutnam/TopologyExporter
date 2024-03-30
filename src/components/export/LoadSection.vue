@@ -92,7 +92,7 @@ export default {
     ...mapGetters("topology", ["data", "jsonData"]),
     logined: {
       get() {
-        return this.$store.state.logined;
+        return this.$store.state.userId;
       },
     },
     working: {

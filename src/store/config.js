@@ -9,13 +9,13 @@ export const ready = ltm.ready;
 export const config = {
   strict: process.env.NODE_ENV === "development",
   state: {
-    topologies: ["bEiivYnl5olZKCgY5qfr", "e22qNHJwYxKMaGlThti5"],
+    topologies: null,
     topoList: null,
     topoId: null,
-    userId: "HuMypSBaSOEp763WeSsP",
+    userId: null,
     username: null,
     email: null,
-    logined: true,
+    logined: false,
     loading: true,
     working: false,
     isUpdateAvailable: false,

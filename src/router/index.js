@@ -18,8 +18,8 @@ function createRoutes(mapper = (v) => v) {
     {
       path: "/",
       name: "/",
-      // redirect: { name: "Login" },
-      redirect: { name: "Home" },
+      redirect: { name: "Login" },
+      // redirect: { name: "Home" },
     },
     {
       path: "/login",
