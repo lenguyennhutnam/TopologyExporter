@@ -102,10 +102,10 @@ export async function addTopo(topo) {
   await updateDoc(topoRef, {
     id: topoRef.id,
   });
-  console.log(userRef.id);
   await updateDoc(userRef, {
-    topologies: arrayUnion(userRef.id),
+    topologies: arrayUnion(topoRef.id),
   });
+  return topoRef.id;
 }
 
 export async function updateData(id, collection, field, data) {}

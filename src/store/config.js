@@ -35,15 +35,20 @@ export const config = {
     loadTopolist(state, data) {
       state.topoList = data;
     },
+    loadTopoKey(state, key) {
+      state.topologies = key;
+    },
     testLogin(state) {
       state.logined = !state.logined;
     },
     login(state, user) {
+      console.log(user);
       state.logined = true;
       state.userId = user.id;
       state.username = user.username;
       state.email = user.email;
       state.topologies = user.topologies;
+      // state.topoId
       router.push("/user");
     },
     logout(state) {
@@ -53,6 +58,7 @@ export const config = {
       state.email = null;
       state.topologies = null;
       state.topoList = null;
+      state.topoId = null;
       router.push("/login");
     },
     loaded(state) {

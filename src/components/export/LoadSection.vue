@@ -7,7 +7,7 @@
       <v-flex xs12 sm4>
         <div class="load">
           <h3 class="headline">Load</h3>
-          <v-btn
+          <!-- <v-btn
             color="primary"
             icon
             small
@@ -15,7 +15,7 @@
             :disabled="working"
             style="position: relative; top: 3px"
             ><v-icon>$vuetify.icons.refresh</v-icon></v-btn
-          >
+          > -->
         </div>
       </v-flex>
     </v-layout>
@@ -109,7 +109,7 @@ export default {
   },
   methods: {
     async loadSavedTopo() {
-      const topoList = [];
+      var topoList = [];
       const idList = this.$store.state.topologies;
       for (const i in idList) {
         await getData(idList[i], "topologies").then((data) => {
@@ -154,21 +154,24 @@ export default {
       this.working = false;
     },
 
-    save() {
+    async save() {
+      this.working = true;
       const currId = this.$store.state.topoId;
       if (!currId) {
+        this.working = false;
         this.saveAsDialog();
         return;
       } else {
         const dataObj = JSON.parse(this.jsonData);
         const projectName = dataObj.projectName;
         delete dataObj.projectName;
-        updateTopo({
+        await updateTopo({
           data: JSON.stringify(dataObj),
           id: currId,
           projectName: projectName,
         });
       }
+      this.working = false;
     },
     saveAsDialog() {
       this.$refs.saveAs.saveAsDialog();

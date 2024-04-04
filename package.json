@@ -1,5 +1,5 @@
 {
-  "name": "mininet-editor",
+  "name": "topology-exporter",
   "version": "0.0.0-no-version",
   "private": true,
   "scripts": {
