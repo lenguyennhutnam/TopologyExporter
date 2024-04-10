@@ -16,14 +16,6 @@
         </v-flex>
 
         <LoadSection></LoadSection>
-
-        <v-slide-y-transition mode="out-in">
-          <v-flex v-if="log.length" xs12 pb-5>
-            <h3 class="headline">Log</h3>
-
-            <LogListing :log="log" />
-          </v-flex>
-        </v-slide-y-transition>
       </v-layout>
     </template>
   </v-container>

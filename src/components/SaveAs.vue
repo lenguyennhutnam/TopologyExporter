@@ -7,7 +7,7 @@
       scrollable
       max-width="600px"
       @keydown.esc="cancel"
-      @keydown.enter="save"
+      @keydown.enter="saveAs"
     >
       <v-card>
         <v-card-title
@@ -35,7 +35,7 @@
             color="primary"
             text
             data-cy="edit-save"
-            @click.native="save"
+            @click.native="saveAs"
             >Save</v-btn
           >
         </v-card-actions>
@@ -46,6 +46,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { addTopo, getData } from "../firebase";
 
 export default {
   name: "SaveAs",
@@ -67,21 +68,41 @@ export default {
         });
       },
     },
+    working: {
+      get() {
+        return !!this.$store.state.working;
+      },
+      set(value) {
+        if (value === true) {
+          this.$store.commit("clearAlert");
+        }
+        this.$store.commit("setWorking", { working: !!value });
+      },
+    },
   },
   mounted() {
     this.setName = this.$store.state.topology.data.projectName;
   },
   methods: {
     saveAsDialog() {
-      this.lastPjName = this.data.projectName;
+      this.lastPjName = this.$store.state.topology.data.projectName;
       this.dialog = true;
       this.fullscreen = false;
     },
-    save() {
-      // this.$store.commit("topology/saveAs", this.jsonData);
-      let payload = JSON.parse(this.jsonData);
-      payload.projectName = this.setName;
-      this.$emit("saveAs", payload);
+    async saveAs() {
+      this.working = true;
+      const dataObj = JSON.parse(this.jsonData);
+      const newTopoId = await addTopo({
+        data: JSON.stringify(dataObj),
+        projectName: this.setName,
+        userId: this.$store.state.userId,
+      });
+      this.$store.commit("setTopoId", newTopoId);
+      await getData(this.$store.state.userId, "users").then((res) => {
+        console.log(res.topologies);
+        this.$store.commit("loadTopoKey", res.topologies);
+      });
+      this.working = false;
       this.dialog = false;
     },
 

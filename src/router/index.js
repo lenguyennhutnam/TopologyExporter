@@ -18,8 +18,8 @@ function createRoutes(mapper = (v) => v) {
     {
       path: "/",
       name: "/",
-      // redirect: { name: "Login" },
-      redirect: { name: "User" },
+      redirect: { name: "Login" },
+      // redirect: { name: "Home" },
     },
     {
       path: "/login",
@@ -31,7 +31,13 @@ function createRoutes(mapper = (v) => v) {
       },
       components: {
         default: () =>
-          import(/* webpackPrefetch: true */ "@/components/pages/LoginForm.vue"),
+          import(
+            /* webpackPrefetch: true */ "@/components/pages/LoginForm.vue"
+          ),
+        toolbar: () =>
+          import(
+            /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
+          ),
       },
     },
     {
@@ -134,37 +140,25 @@ function createRoutes(mapper = (v) => v) {
           ),
       },
     },
-    // {
-    //   path: "/about",
-    //   name: "About",
-    //   meta: {
-    //     title: "About",
-    //     drawer: true,
-    //     icon: "mdi-information",
-    //   },
-    //   components: {
-    //     default: () =>
-    //       import(
-    //         /* webpackPrefetch: true */ "@/components/pages/AboutPage.vue"
-    //       ),
-    //   },
-    // },
     {
       path: "/user",
       name: "User",
       meta: {
         title: "User",
+        // drawer: true,
         drawer: true,
         icon: "mdi-account",
       },
       components: {
         default: () =>
-          import(/* webpackPrefetch: true */ "@/components/pages/UserPage/AvatarInput.vue"),
-        // toolbar: () =>
-        //   import(
-        //     /* webpackPrefetch: true */ "@/components/TestPage.vue"
-        //   ),
+          import(
+            /* webpackPrefetch: true */ "@/components/pages/UserPage/UserPage.vue"
+          ),
       },
+    },
+    {
+      path: "*",
+      redirect: { name: "Home" },
     },
   ].map(mapper);
 }
@@ -178,7 +172,6 @@ function createNormalRoute(route) {
   if (route.children != null) {
     route.children = route.children.map(createNormalRoute);
   }
-
   return route;
 }
 
@@ -214,6 +207,11 @@ const routes = [
 export const router = new Router({ routes });
 
 router.beforeEach((to, from, next) => {
+  if (to.name == "User") {
+    if (store.state.logined == false) {
+      next("/login");
+    } else next();
+  }
   // Stay in view mode
   if (!to.meta.isView && from.meta.isView) {
     return next(`/view${to.fullPath}`);

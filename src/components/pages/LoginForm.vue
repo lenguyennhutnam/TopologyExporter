@@ -55,8 +55,19 @@
                           x-large
                           block
                           :disabled="!valid"
+                          color="disable"
+                          @click="tryIt"
+                        >
+                          Try
+                        </v-btn>
+                      </v-col>
+                      <v-col class="d-flex" cols="12" sm="3" xsm="12" align-end>
+                        <v-btn
+                          x-large
+                          block
+                          :disabled="!valid"
                           color="primary"
-                          @click="validate"
+                          @click="login"
                         >
                           Login
                         </v-btn>
@@ -71,27 +82,18 @@
                 <v-card-text>
                   <v-form ref="registerForm" v-model="valid" lazy-validation>
                     <v-row>
-                      <v-col cols="12" >
+                      <v-col cols="12">
                         <v-text-field
-                          v-model="username"
+                          v-model="registerUsername"
                           :rules="[rules.required]"
                           label="Username"
                           maxlength="20"
                           required
                         ></v-text-field>
                       </v-col>
-                      <!-- <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="lastName"
-                          :rules="[rules.required]"
-                          label="Last Name"
-                          maxlength="20"
-                          required
-                        ></v-text-field>
-                      </v-col> -->
                       <v-col cols="12">
                         <v-text-field
-                          v-model="email"
+                          v-model="registerEmail"
                           :rules="emailRules"
                           label="E-mail"
                           required
@@ -130,7 +132,7 @@
                           block
                           :disabled="!valid"
                           color="primary"
-                          @click="validate"
+                          @click="register"
                           >Register</v-btn
                         >
                       </v-col>
@@ -148,20 +150,85 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { checkLogin, getData, addData } from "../../firebase";
+import router from "../../router";
 export default {
   computed: {
     ...mapGetters("topology", ["data", "jsonData"]),
     passwordMatch() {
       return () => this.password === this.verify || "Password must match";
     },
+    working: {
+      get() {
+        return !!this.$store.state.working;
+      },
+      set(value) {
+        if (value) {
+          this.$store.commit("clearAlert");
+        }
+        this.$store.commit("setWorking", { working: !!value });
+      },
+    },
   },
   methods: {
-    validate() {
-      if (this.$refs.loginForm.validate()) {
-        this.$router.push("/home");
+    showAlert(type, text) {
+      this.$store.commit("setAlert", { type, text });
+      setTimeout(() => this.$store.commit("clearAlert"), 2000);
+    },
+    tryIt() {
+      this.$store.commit("loginWithoutAccount");
+      router.push("/home");
+    },
+    async login() {
+      this.working = true;
+      this.valid = false;
+      if (await this.$refs.loginForm.validate()) {
+        this.working = true;
+        // return userinfo
+        const userinfo = await checkLogin(this.loginEmail, this.loginPassword);
+        if (userinfo) {
+          console.log(userinfo);
+          this.showAlert("success", "Login successfully");
+          this.$store.commit("login", userinfo);
+        } else {
+          this.showAlert("error", "Email or password is incorrect");
+        }
+        this.working = false;
         return;
       }
-      console.log(222);
+    },
+    async register() {
+      if (await this.$refs.registerForm.validate()) {
+        if (
+          await addData(
+            this.registerEmail,
+            this.password,
+            this.registerUsername
+          )
+        ) {
+          this.showAlert("success", "Registered");
+          this.tab = 0;
+          this.loginEmail = this.registerEmail;
+          this.loginPassword = this.password;
+          this.$refs.registerForm.reset();
+          return;
+        } else {
+          const acpt = await this.$confirm("<p>Email already in use</p>", {
+            buttonFalseText: "Try another email",
+            buttonTrueText: "Login",
+            icon: this.$vuetify.icons.warning,
+            title: "Warning",
+            width: 600,
+          });
+          if (acpt) {
+            this.tab = 0;
+            return;
+          } else {
+            this.registerEmail = "";
+            return;
+          }
+        }
+      }
     },
     reset() {
       this.$refs.form.reset();
@@ -180,8 +247,8 @@ export default {
       ],
       valid: true,
 
-      username: "",
-      email: "",
+      registerUsername: "",
+      registerEmail: "",
       password: "",
       verify: "",
       loginPassword: "",

@@ -7,15 +7,15 @@
       <v-flex xs12 sm4>
         <div class="load">
           <h3 class="headline">Load</h3>
-          <v-btn
+          <!-- <v-btn
             color="primary"
             icon
             small
-            @click="fetchAllTopo"
+            @click="loginTo"
             :disabled="working"
             style="position: relative; top: 3px"
             ><v-icon>$vuetify.icons.refresh</v-icon></v-btn
-          >
+          > -->
         </div>
       </v-flex>
     </v-layout>
@@ -23,7 +23,12 @@
       <v-flex xs12 sm4>
         <v-menu :disabled="working" bottom offset-y>
           <template #activator="{ on }">
-            <v-btn :disabled="working" outlined block color="primary" v-on="on"
+            <v-btn
+              :disabled="working || !logined"
+              outlined
+              block
+              color="primary"
+              v-on="on"
               >Save</v-btn
             >
           </template>
@@ -43,14 +48,24 @@
       <v-flex xs12 sm4>
         <v-menu :disabled="working" bottom offset-y>
           <template #activator="{ on }">
-            <v-btn :disabled="working" outlined block color="primary" v-on="on"
+            <v-btn
+              :disabled="working || !logined"
+              outlined
+              block
+              color="primary"
+              v-on="on"
+              @click="loadSavedTopo"
               >Load</v-btn
             >
           </template>
           <div class="loadTopoList">
             <v-list>
-              <v-list-item v-for="topo in topoList" :key="topo.id" @click.stop>
-                <v-list-item-title @click="loadTopo(topo.id)">{{
+              <v-list-item
+                v-for="topo in this.$store.state.topoList"
+                :key="topo.projectName"
+                @click.stop
+              >
+                <v-list-item-title @click="loadTopo(topo)">{{
                   topo.projectName
                 }}</v-list-item-title>
               </v-list-item>
@@ -63,24 +78,23 @@
 </template>
 
 <script>
-// var db = "http://localhost:3001/usertopo";
-import { mapGetters } from "vuex";
 import SaveAs from "../SaveAs.vue";
-import { getTopo } from "../../firebase";
+import { mapGetters } from "vuex";
+import { getData, updateTopo } from "../../firebase";
 
 export default {
   name: "SaveLoad",
   components: { SaveAs },
   data() {
-    return {
-      topoList: "",
-    };
-  },
-  created() {
-    this.fetchAllTopo();
+    return {};
   },
   computed: {
     ...mapGetters("topology", ["data", "jsonData"]),
+    logined: {
+      get() {
+        return this.$store.state.userId;
+      },
+    },
     working: {
       get() {
         return !!this.$store.state.working;
@@ -94,35 +108,31 @@ export default {
     },
   },
   methods: {
+    async loadSavedTopo() {
+      var topoList = [];
+      const idList = this.$store.state.topologies;
+      for (const i in idList) {
+        await getData(idList[i], "topologies").then((data) => {
+          topoList.push(data);
+        });
+      }
+      this.$store.commit("loadTopolist", topoList);
+    },
+    loginTo() {
+      this.$store.commit("testLogin");
+    },
+
     showAlert(type, text) {
       this.$store.commit("setAlert", { type, text });
     },
-    async fetchAllTopo() {
-      getTopo("bEiivYnl5olZKCgY5qfr")
-      .then((res) => {
-        this.topoList = res.data;
-        this.topoList
-      });
-      // .then((topo) => console.log(topo));
 
-      // this.working = true;
-      // await fetch(db)
-      //   .then((res) => res.json())
-      //   .then((topo) => {
-      //     this.topoList = topo;
-      //   });
-      // this.working = false;
+    loadTopo(topo) {
+      const data = JSON.parse(topo.data);
+      data["projectName"] = topo.projectName;
+      this.confirmLoad(data, topo.id);
     },
 
-    loadTopo(id) {
-      fetch(db + "/" + id)
-        .then((res) => res.json())
-        .then((topo) => {
-          this.confirmLoad(topo);
-        });
-    },
-
-    async confirmLoad(loadData) {
+    async confirmLoad(loadData, id) {
       this.working = true;
       const confirmed = await this.$confirm(
         "<p>This will <strong>erase all your work</strong> (except what you have save or exported).<br/>Are you sure you want to continue?</p>",
@@ -135,8 +145,8 @@ export default {
         }
       );
       if (confirmed) {
-        console.log(loadData);
         this.$store.commit("topology/importData", loadData);
+        this.$store.commit("setTopoId", id);
         this.showAlert("success", "Loaded.");
       } else {
         this.showAlert("info", "Load canceled.");
@@ -144,35 +154,31 @@ export default {
       this.working = false;
     },
 
-    save() {
-      if (!this.data.id) {
+    async save() {
+      this.working = true;
+      const currId = this.$store.state.topoId;
+      if (!currId) {
+        this.working = false;
         this.saveAsDialog();
         return;
-      }
-      fetch(db + "/" + this.data.id, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: this.jsonData,
-      })
-        .then((res) => res.json())
-        .then((savedData) => {
-          if (savedData) {
-            this.showAlert("success", "Saved.");
-          } else {
-            this.showAlert("info", "Saved canceled.");
-          }
+      } else {
+        const dataObj = JSON.parse(this.jsonData);
+        const projectName = dataObj.projectName;
+        delete dataObj.projectName;
+        await updateTopo({
+          data: JSON.stringify(dataObj),
+          id: currId,
+          projectName: projectName,
         });
+      }
+      this.working = false;
     },
-
     saveAsDialog() {
       this.$refs.saveAs.saveAsDialog();
     },
-
     saveAs(data) {
-      this.$store.commit("topology/saveAs", data);
-      this.$store.commit("topology/importData", data);
+      // this.$store.commit("topology/saveAs", data);
+      // this.$store.commit("topology/importData", data);
     },
   },
 };

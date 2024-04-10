@@ -1,70 +1,81 @@
 <template>
-  <v-container fluid>
-    <v-layout column>
-      <v-card>
-        <v-card-text>
-          <v-flex class="mb-4">
-            <v-avatar size="96" class="mr-4">
-              <img
-                :src="'/avatars/avatar_' + form.avatar.toLowerCase() + '.png'"
-                alt="Avatar"
-              />
-            </v-avatar>
-            <v-btn @click="openAvatarPicker">Change Avatar</v-btn>
-          </v-flex>
-          <v-text-field
-            v-model="form.firstName"
-            label="FirstName"
-          ></v-text-field>
-          <v-text-field
-            v-model="form.lastName"
-            label="Last Name"
-          ></v-text-field>
-          <v-text-field
-            v-model="form.contactEmail"
-            label="Email Address"
-          ></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" :loading="loading" @click.native="update">
-            <v-icon left dark>check</v-icon>
-            Save Changes
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-layout>
-    <avatar-picker
-      v-model="showAvatarPicker"
-      :current-avatar="form.avatar"
-      @selected="selectAvatar"
-    ></avatar-picker>
-  </v-container>
+  <v-card class="mx-auto" max-width="350">
+    <v-col style="display: flex; justify-content: center">
+      <v-avatar size="100" color="#eee">
+        <v-icon size="90">mdi-account</v-icon>
+      </v-avatar>
+    </v-col>
+    <v-divider></v-divider>
+    <!-- <v-list-item color="rgba(0, 0, 0, .4)">
+      <v-list-item-content>
+        <v-list-item-title class="title">User name</v-list-item-title>
+        <v-list-item-subtitle>Network Engineer</v-list-item-subtitle>
+      </v-list-item-content>
+      <v-list-item-content>
+        <v-list-item-title class="title">Marcus Obrien</v-list-item-title>
+        <v-list-item-subtitle>Network Engineer</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item> -->
+    <v-list-item v-for="(value, field) in userInfor" :key="field">
+      <v-list-item-content>
+        <v-list-item-title class="title">{{ field }}</v-list-item-title>
+        <v-list-item-subtitle>{{ value }}</v-list-item-subtitle>
+      </v-list-item-content></v-list-item
+    >
+    <v-divider></v-divider>
+    <v-card-actions style="padding: 15px 10px">
+      <v-btn color="primary" @click="logout()">{{
+        this.$store.state.userId ? "Logout" : "Login"
+      }}</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
-import { getUserData } from "../../../firebase";
-import AvatarPicker from "./AvatarPicker/AvatarPicker.vue";
+import { getData, checkLogin } from "../../../firebase";
+import store from "../../../store";
 export default {
-  pageTitle: "My Profile",
-  components: { AvatarPicker },
   data() {
     return {
-      loading: false,
-      form: {
-        firstName: "John",
-        lastName: "Doe",
-        contactEmail: "john@doe.com",
-        avatar: "MALE_CAUCASIAN_BLOND_BEARD",
+      userInfor: {
+        Username: "",
+        Email: "",
       },
-      showAvatarPicker: false,
     };
   },
-  methods: {
-    openAvatarPicker() {
-      this.showAvatarPicker = true;
+  working: {
+    get() {
+      return !!this.$store.state.working;
     },
-    selectAvatar(avatar) {
-      this.form.avatar = avatar;
+    set(value) {
+      if (value === true) {
+        this.$store.commit("clearAlert");
+      }
+      this.$store.commit("setWorking", { working: !!value });
+    },
+  },
+  mounted() {
+    this.userInfor.Username =
+      this.$store.state.username || "You are not logged in";
+    this.userInfor.Email = this.$store.state.email || "You are not logged in";
+  },
+  methods: {
+    async logout() {
+      // if not logged in => go to login
+      if (!this.$store.state.userId) {
+        this.$router.push("/login");
+        return;
+      }
+      const confirmed = await this.$confirm("<p>Wanna logout?</p>", {
+        buttonFalseText: "No",
+        buttonTrueText: "Yes",
+        icon: this.$vuetify.icons.warning,
+        title: "Warning",
+        width: 300,
+      });
+      if (confirmed) {
+        this.$store.commit("logout");
+      }
     },
   },
 };

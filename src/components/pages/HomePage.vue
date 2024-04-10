@@ -3,7 +3,7 @@
     <v-layout wrap>
       <AppLogo />
       <v-flex xs12>
-        <AppDescription />
+        <!-- <AppDescription /> -->
       </v-flex>
       <v-flex xs12>
         <BindingsList />
