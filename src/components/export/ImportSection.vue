@@ -168,7 +168,6 @@ export default {
           const stringToImport =
             this.importers[file.type] ||
             this.importers[file.name.replace(/^.*(?=\.)/, "")];
-          console.log(stringToImport);
           if (stringToImport) {
             const str = fr.result;
             const { data, log } = stringToImport(str);
@@ -195,6 +194,7 @@ export default {
       this.working = false;
     },
     async confirmImport(importData, text) {
+      // console.log(importData);
       const confirmed = await this.$confirm(
         (text || "") +
           "<p>This will <strong>erase all your work</strong> (except what you have exported).<br/>Are you sure you want to continue?</p>",

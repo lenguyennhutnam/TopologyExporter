@@ -4,6 +4,7 @@
       <span style="position: relative; top: 2px">{{
         this.data.projectName
       }}</span>
+
       <v-btn
         v-for="({ icon, text, action, enabled }, i) in items"
         :key="i"
@@ -14,15 +15,18 @@
       >
         <v-icon :alt="text">{{ icon }}</v-icon>
       </v-btn>
+      <avatar-icon style="padding-left: 10px"></avatar-icon>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import AvatarIcon from "./AvatarIcon.vue";
 
 export default {
   name: "TopologyToolbar",
+  components: { AvatarIcon },
   props: {
     undoRedo: {
       type: Boolean,
